@@ -12,5 +12,4 @@ An initial overview of the RedeeCash Exchange registration,
 
 [RedeeCash Exchange Overview](files/RedeeCash_Exchange.pdf)
 
-
-
+[Using Blockchain for Private Equity under Rule 506b](files/blockchain_rule506b.pdf)
