@@ -1,6 +1,6 @@
 # RedeeCash Exchange Data
 
-This folder will hold the entity volunmtary repoorting that is not offered by the SEC EDGAR system.
+This folder will hold the entity voluntary repoorting that is not offered by the SEC EDGAR system.
 
 The directory structure top level will be the SEC file number and each file with a unique filename suffix with the filing type.
 
