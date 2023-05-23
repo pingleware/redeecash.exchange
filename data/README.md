@@ -22,3 +22,5 @@ Since these filings are voluntary for non-public companies, an audit by an indep
 ## Company Reporting
 
 A company does not need to be listed on the RedeeCash Exchange to submit reports as long as they have an active Regulation D or A Tier 1 offering on the SEC EDGAR system and is NOT a public company. There is no charge for submitting reports.
+
+The application to assist in creating the corresponding XML file will be distributed at https://github.com/pingleware/redeecash.exchange.reorting
