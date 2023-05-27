@@ -1,0 +1,24 @@
+{
+  "name": "redeecash.exchange",
+  "version": "1.0.0",
+  "description": "Future of Registered National Securities Exchange for Cryptocurrency Token Trading",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/pingleware/redeecash.exchange.git"
+  },
+  "keywords": [],
+  "author": "PRESSPAGE ENTERTAINMENT INC dba PINGLEWARE <maintainers@pingleware.work>",
+  "license": "CC-BY-4.0",
+  "bugs": {
+    "url": "https://github.com/pingleware/redeecash.exchange/issues"
+  },
+  "homepage": "https://github.com/pingleware/redeecash.exchange#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "mongoose": "^7.2.1"
+  }
+}
