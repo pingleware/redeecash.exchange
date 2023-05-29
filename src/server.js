@@ -13,7 +13,7 @@ const {
     runTests,
     handleCustomerSupportTicket,
     getTokenQuote,
-    updateTokenQuote
+    getOrderBook
 } = require("./api");
 
 const app = express();
@@ -73,11 +73,11 @@ app.get('/getTokenQuote', (req, res) => {
   const status = getTokenQuote(tokenSymbol)
   res.json(status);
 });
-app.post('/updateTokenQuote', (req, res) => {
-  const { tokenSymbol, newQuote } = req.body;
-  const status = updateTokenQuote(tokenSymbol, newQuote);
-  res.json(status);
-});
+app.get('/orderbook', (req, res) => {
+  const { symbol } = req.query;
+  const _orderbook = getOrderBook(symbol);
+  res.json({_orderbook});
+})
 
 const port = 3000;
 

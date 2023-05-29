@@ -1,9 +1,17 @@
 "use strict"
 
 const mongoose = require('mongoose');
+const Web3 = require('web3');
+const OrderBook = require('./orderBook');
+
+// Initialize Web3
+const web3 = new Web3('http://localhost:8545'); // Update with your Ethereum node URL
+
+const contract_owner_wallet = "";
+
 
 // Connect to MongoDB
-mongoose.connect('mongodb://192.168.0.181:27017/redeecash.exchange', {
+mongoose.connect('mongodb://localhost:27017/redeecash.exchange', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -22,6 +30,10 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true,
+    },
+    wallet: {
+        type: String,
+        required: true
     },
     tokenBalance: {
         type: Number,
@@ -52,6 +64,20 @@ const tokenSchema = new mongoose.Schema({
       required: true,
       unique: true,
     },
+    abi: {
+      type: String,
+      require: true,
+      unique: true
+    },
+    secFileNumber: {
+      type: String,
+      required: true,
+      unique: true
+    },
+    securityType: {
+      type: String,
+      required: true
+    }
 });
 
 // Define the support ticket schema
@@ -91,7 +117,7 @@ const orderSchema = new mongoose.Schema({
       enum: ['Buy', 'Sell'],
       required: true,
     },
-    quantity: {
+    volume: {
       type: Number,
       required: true,
     },
@@ -106,18 +132,6 @@ const orderSchema = new mongoose.Schema({
     },
 });
 
-// Define the token quote schema
-const tokenQuoteSchema = new mongoose.Schema({
-    tokenSymbol: {
-      type: String,
-      unique: true,
-      required: true,
-    },
-    quote: {
-      type: Number,
-      required: true,
-    },
-});
   
 // Create the token model
 const Token = mongoose.model('Token', tokenSchema);
@@ -131,8 +145,6 @@ const SupportTicket = mongoose.model('SupportTicket', supportTicketSchema);
 // Create the order model
 const Order = mongoose.model('Order', orderSchema);
 
-// Create the token quote model
-const TokenQuote = mongoose.model('TokenQuote', tokenQuoteSchema);
 
 /**
  * User Registration
@@ -259,16 +271,22 @@ async function placeOrder(userId, orderDetails) {
     
         // Validate the order
         // You can add your own validation logic here
-        if (order.type === 'Buy' && order.quantity <= 0) {
+        if (order.type === 'Buy' || order.type === 'Sell' && order.quantity <= 0) {
           return { success: false, message: 'Invalid order quantity' };
         }
     
-        // Process the order
-        // You can add your own order processing logic here
         // For simplicity, we'll just save the order to the database
         await order.save();
+
+        // Process the order
+        // You can add your own order processing logic here
+        // OrderBook
+        const OrderBook = require("./orderBook");
+        const orderBook = new OrderBook(orderDetails.tokenSymbol);
+
+        orderBook.matchOrders();
     
-        return { success: true, message: 'Order placed successfully' };
+        return { success: true, message: 'Order placed successfully', orderbook: orderBook.printOrderBook() };
     } catch (error) {
         return { success: false, message: 'Error placing the order' };
     }
@@ -293,14 +311,30 @@ async function depositTokens(userId, amount, token) {
         if (!user) {
           return { success: false, message: 'User not found' };
         }
-    
-        // Update the token balance
-        user.tokenBalance += amount;
-    
-        // Save the updated user in the database
-        await user.save();
-    
-        return { success: true, message: 'Tokens deposited successfully' };
+
+        // Set the contract address
+        const contractAddress = token.contractAddress;
+
+        // Load the contract ABI
+        const abi = token.abi;
+
+        // Create a contract instance
+        const contract = new web3.eth.Contract(abi, contractAddress);
+
+        try {
+          const result = await contract.methods.mint(user.wallet, amount).send({ from: contract_owner_wallet });
+          const balance = await contract.methods.balanceOf(address).call();
+
+          // Update the token balance
+          user.tokenBalance = balance;
+      
+          // Save the updated user in the database
+          await user.save();
+
+          return { success: true, message: 'Tokens deposited successfully', txHash: result.transactionHash };
+        } catch (error) {
+          res.status(500).json({ error: 'Failed to mint tokens' });
+        }    
     } catch (error) {
         return { success: false, message: 'Error depositing tokens' };
     }
@@ -330,14 +364,30 @@ async function withdrawTokens(userId, amount, token) {
         if (user.tokenBalance < amount) {
           return { success: false, message: 'Insufficient token balance' };
         }
+
+
+        // Set the contract address
+        const contractAddress = token.contractAddress;
+
+        // Load the contract ABI
+        const abi = token.abi;
+
+        // Create a contract instance
+        const contract = new web3.eth.Contract(abi, contractAddress);
     
-        // Update the token balance
-        user.tokenBalance -= amount;
-    
-        // Save the updated user in the database
-        await user.save();
-    
-        return { success: true, message: 'Tokens withdrawn successfully' };
+        try {
+          const result = await contract.methods.burn(amount).send({ from: user.wallet });
+          const balance = await contract.methods.balanceOf(address).call();
+
+          // Update the token balance
+          user.tokenBalance = balance;
+      
+          // Save the updated user in the database
+          await user.save();
+          return { success: true, message: 'Tokens withdrawn successfully', txHash: result.transactionHash };
+        } catch (error) {
+          res.status(500).json({ error: 'Failed to burn tokens' });
+        }
     } catch (error) {
         return { success: false, message: 'Error withdrawing tokens' };
     }
@@ -350,7 +400,7 @@ async function withdrawTokens(userId, amount, token) {
  * 
  * @param {*} message 
  */
-function processFIXMessage(fixMessage) {
+async function processFIXMessage(fixMessage) {
     const fields = fixMessage.split('|');
 
     const message = {};
@@ -358,9 +408,107 @@ function processFIXMessage(fixMessage) {
         const [tag, value] = field.split('=');
         message[tag] = value;
     }
-
     console.log('Received FIX Message:');
     console.log(message);
+    
+    /**
+     * New Order (Single) Message:
+     * 8=FIX.4.4|9=146|35=D|34=1|49=CLIENT1|52=20230527-10:30:00.123|56=REDEECASH.EXCHANGE|55=SYM1|11=ORDER1|54=1|38=100|40=2|44=25.00|59=0|10=231|
+     * 
+     * Execution Report Message:
+     * 8=FIX.4.4|9=156|35=8|34=2|49=REDEECASH.EXCHANGE|52=20230527-10:30:00.567|56=CLIENT1|37=EXEC1|17=123456|20=0|39=2|55=SYM1|31=25.00|32=100|14=2500.00|151=100|6=0|60=20230527-10:30:00|10=182|
+     * 
+     * Order Cancel Request Message:
+     * 8=FIX.4.4|9=125|35=F|34=3|49=CLIENT1|52=20230527-10:30:00.888|56=REDEECASH.EXCHANGE|41=CANCEL1|37=ORDER1|11=ORDER1|55=SYM1|10=191|
+     * 
+     */
+
+    switch(message[35]) {
+      case 'D': // New Order (Single) Message
+        {
+          const client = message[40];
+          var query = { wallet: client };
+          mongoose.collection("User").find(query).toArray( async function(err, result) {
+            const tokenSymbol = message[55];
+            const orderType = message[54]; // 1=Buy,2=Sell
+            const orderDetails = {
+              userId: result[0], // client
+              tokenSymbol: tokenSymbol, // token symbol
+              type: (orderType == 1 ? 'Buy' : 'Sell'),  // order type
+              volume: Number(message[38]),
+              price: Number(message[44]),
+              status: 'Pending'
+            }
+            const order = new Order(orderDetails);
+            // Validate the order
+            // You can add your own validation logic here
+            if (order.type === 'Buy' || order.type === 'Sell' && order.quantity <= 0) {
+              return { success: false, message: 'Invalid order quantity' };
+            }
+        
+            // For simplicity, we'll just save the order to the database
+            await order.save();
+  
+            // Process the order
+            // You can add your own order processing logic here
+            // OrderBook
+            const OrderBook = require("./orderBook");
+            const orderBook = new OrderBook(tokenSymbol);
+  
+            orderBook.matchOrders();
+        
+            return { success: true, message: 'Order placed successfully', orderbook: orderBook.printOrderBook() };  
+          });
+        }
+        break;
+      case '8': // Execution Report
+        {
+          /**
+           * Execution Report Message:
+           * 8=FIX.4.4|9=156|35=8|34=2|49=REDEECASH.EXCHANGE|52=20230527-10:30:00.567|56=CLIENT1|37=EXEC1|17=123456|20=0|39=2|55=SYM1|31=25.00|32=100|14=2500.00|151=100|6=0|60=20230527-10:30:00|10=182|
+           * 
+           * 35=8: Message type is Execution Report.
+           * 49=REDEECASH.EXCHANGE: Sender ID.
+           * 56=CLIENT1: Target ID.
+           * 37=EXEC1: Execution ID.
+           * 17=123456: Order ID.
+           * 39=2: Execution type (2 for Fill).
+           * 55=SYM1: Symbol or instrument.
+           * 31=25.00: Last price.
+           * 32=100: Last quantity.
+           * 14=2500.00: Cumulative quantity.
+           * 151=100: Leaves quantity.
+           * 6=0: Average price.
+           * 60=20230527-10:30:00: Transact time.
+           * 10=182: Checksum.
+           * 
+           */
+
+          const transactionHash = message[37];
+          const OrderBook = require("./orderBook");
+          const orderBook = new OrderBook(tokenSymbol);
+          return orderBook.getTransactionByHash(transactionHash);
+        }
+        break;
+      case 'F': // Order Cancel Request
+        {
+          /**
+           * Order Cancel Request Message:
+           * 8=FIX.4.4|9=125|35=F|34=3|49=CLIENT1|52=20230527-10:30:00.888|56=REDEECASH.EXCHANGE|41=CANCEL1|37=ORDER1|11=ORDER1|55=SYM1|10=191|
+           */
+          const tokenSymbol = message[55];
+          const orderId = message[37];
+          const OrderBook = require("./orderBook");
+          const orderBook = new OrderBook(tokenSymbol);
+          if (orderBook.cancelOrder(orderId)) {
+            return { success: true, message: 'Order cancelled successfully', orderbook: orderBook.printOrderBook() };
+          } else {
+            return { success: false, message: `Order ${orderId} not cancelled`, orderbook: orderBook.printOrderBook() };
+          }
+        }
+        break;
+    }
+
 }
   
 /**
@@ -445,34 +593,22 @@ async function handleCustomerSupportTicket(ticketDetails) {
 
 async function getTokenQuote(tokenSymbol) {
     try {
-      const tokenQuote = await TokenQuote.findOne({ tokenSymbol }).exec();
-  
-      if (tokenQuote) {
-        return { success: true, quote: tokenQuote.quote };
-      } else {
-        return { success: false, message: 'Token quote not found' };
-      }
+      const orderBook = new OrderBook();
+      const quote = orderBook.getQuote()
+
+      return { success: true, quote: quote };
     } catch (error) {
       return { success: false, message: 'Error fetching token quote' };
     }
 }
 
-async function updateTokenQuote(tokenSymbol, newQuote) {
-    try {
-      const updatedQuote = await TokenQuote.findOneAndUpdate(
-        { tokenSymbol },
-        { quote: newQuote },
-        { new: true }
-      ).exec();
-  
-      if (updatedQuote) {
-        return { success: true, message: 'Token quote updated successfully' };
-      } else {
-        return { success: false, message: 'Token quote not found' };
-      }
-    } catch (error) {
-      return { success: false, message: 'Error updating token quote' };
-    }
+async function getOrderBook(tokenSymbol) {
+  try {
+    const orderBook = new OrderBook(tokenSymbol);
+    return { success: orderBook.printOrderBook() };
+  } catch(error) {
+    return { success: false, message: error };
+  }
 }
 
 module.exports = {
@@ -487,5 +623,5 @@ module.exports = {
     runTests,
     handleCustomerSupportTicket,
     getTokenQuote,
-    updateTokenQuote
+    getOrderBook
 }
