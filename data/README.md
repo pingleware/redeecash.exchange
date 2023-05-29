@@ -2,7 +2,7 @@
 
 This folder will hold the entity voluntary reporting that is not offered by the SEC EDGAR system.
 
-The directory structure top level will be the SEC file number and each file with a unique filename suffixed with the filing type.
+The directory structure top level will be the SEC assigned filer CIK followed by the SEC assigned file number and each file with a unique filename suffixed with the filing type.
 
 ## New Filing Types
 
