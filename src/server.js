@@ -78,6 +78,77 @@ app.get('/orderbook', (req, res) => {
   const _orderbook = getOrderBook(symbol);
   res.json({_orderbook});
 })
+app.post('/symbol/new', (req, res) => {
+  const {assetType,regulation,company} = req.body;
+
+  const symbol = generateSymbol(assetType, regulation, company);
+  res.json({symbol});
+})
+
+function fullNameToAbbreviation(fullName) {
+  // Split the full name into individual words
+  const words = fullName.split(' ');
+
+  // Extract the first letter of each word
+  const initials = words.map(word => word.charAt(0).toUpperCase());
+
+  // Join the initials together to form the abbreviation
+  const abbreviation = initials.join('');
+
+  return abbreviation;
+}
+
+function generateSymbol(assetType, regulation, companyName) {
+  let symbol = '';
+
+  const abbreviation = fullNameToAbbreviation(companyName);
+
+  // Add abbreviation
+  if (abbreviation) {
+    symbol += abbreviation.toUpperCase();
+  } else {
+    symbol += 'UNK';
+  }
+
+  // Add prefix based on asset type
+  switch (assetType) {
+    case 'stock':
+      symbol += 'STK';
+      break;
+    case 'currency':
+      symbol += 'CUR';
+      break;
+    case 'commodity':
+      symbol += 'COM';
+      break;
+    case 'debt':
+      symbol += 'DBT';
+      break;
+    // Add more cases for other asset types if needed
+    default:
+      symbol += 'UNK';
+  }
+
+  // Add suffix based on regulation
+  switch (regulation) {
+    case '506b':
+      symbol += '-506B';
+      break;
+    case '506c':
+      symbol += '-506C';
+      break;
+    case 'AT1':
+      symbol += '-AT1';
+      break;
+    // Add more cases for other regulation types if needed
+    default:
+      symbol += '-UNK';
+  }
+
+  return symbol;
+}
+
+
 
 const port = 3000;
 
