@@ -45,6 +45,55 @@ const userSchema = new mongoose.Schema({
     },
 });
 
+// Define the transferAgent schema
+const transferAgentSchema = mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  email: {
+      type: String,
+      required: true,
+      unique: true,
+  },
+  password: {
+      type: String,
+      required: true,
+  },
+  wallet: {
+      type: String,
+      required: true
+  },
+  address1: {
+      type: String,
+      required: false
+  },
+  address1: {
+    type: String,
+    required: false
+  },
+  address2: {
+    type: String,
+    required: false
+  },
+  city: {
+    type: String,
+    required: false
+  },
+  state: {
+    type: String,
+    required: false
+  },
+  zipcode: {
+    type: String,
+    required: false
+  },
+  phoneNumber: {
+    type: String,
+    required: false
+  },
+});
+
 // Define the token schema
 const tokenSchema = new mongoose.Schema({
     name: {
@@ -139,6 +188,9 @@ const Token = mongoose.model('Token', tokenSchema);
 // Create the user model
 const User = mongoose.model('User', userSchema);
 
+// Create the transfer agent model
+const TransferAgent = mongoose.model('TransferAgent', transferAgentSchema);
+
 // Create the support ticket model
 const SupportTicket = mongoose.model('SupportTicket', supportTicketSchema);
 
@@ -154,32 +206,75 @@ const Order = mongoose.model('Order', orderSchema);
  * 
  * @param {string} email 
  * @param {string} password 
+ * @param {number} access 0=non-accredited;1=accredited;2=affililate;4=broker-dealer
  * @returns {object} status 
  */
-async function registerUser(email, password) {
+async function registerUser(email, password, wallet, access) {
+  mongoose.collection('Token').find({symbol: this.tokenSymbol},async function(err, token){
+    const contractAddress = token[0].contractAddress;
+    const abi = token[0].abi;
+    const contract = new web3.eth.Contract(abi, contractAddress);
+
     try {
-        // Validate email and password
-        if (!validateEmail(email)) {
-          return { success: false, message: 'Invalid email format' };
-        }
-    
-        if (!validatePassword(password)) {
-          return {
-            success: false,
-            message: 'Password must be at least 8 characters long',
-          };
-        }
-    
-        // Create a new user instance
-        const user = new User({ email, password });
-    
-        // Save the user to the database
-        await user.save();
-    
-        return { success: true, message: 'User registered successfully' };
+      // Validate email and password
+      if (!validateEmail(email)) {
+        return { success: false, message: 'Invalid email format' };
+      }
+  
+      if (!validatePassword(password)) {
+        return {
+          success: false,
+          message: 'Password must be at least 8 characters long',
+        };
+      }
+  
+      // Create a new user instance
+      const user = new User({ email, password, wallet });
+  
+      // Save the user to the database
+      await user.save();
+
+      await contract.methods.addInvestor({investor: wallet, investor_type: access}).call({from: this.transferAgent});
+  
+      return { success: true, message: 'User registered successfully' };
     } catch (error) {
-        return { success: false, message: 'Error registering user' };
+      return { success: false, message: 'Error registering user' };
     }    
+  });
+}
+
+async function registerTransferAgent(email,password,wallet) {
+  mongoose.collection('Token').find({symbol: this.tokenSymbol},async function(err, token){
+    const contractAddress = token[0].contractAddress;
+    const abi = token[0].abi;
+    const contract = new web3.eth.Contract(abi, contractAddress);
+
+    try {
+      // Validate email and password
+      if (!validateEmail(email)) {
+        return { success: false, message: 'Invalid email format' };
+      }
+  
+      if (!validatePassword(password)) {
+        return {
+          success: false,
+          message: 'Password must be at least 8 characters long',
+        };
+      }
+  
+      // Create a new user instance
+      const transferAgent = new TransferAgent({ email, password, wallet });
+  
+      // Save the user to the database
+      await transferAgent.save();
+
+      await contract.methods.addTransferAgent({transferAgent: wallet});
+  
+      return { success: true, message: 'Transfer Agent registered successfully' };
+    } catch (error) {
+      return { success: false, message: 'Error registering Transfer Agent ' };
+    }    
+  });
 }
 
 /**
@@ -613,6 +708,7 @@ async function getOrderBook(tokenSymbol) {
 
 module.exports = {
     registerUser,
+    registerTransferAgent,
     performKYCVerification,
     applyForTokenListing,
     placeOrder,
