@@ -97,52 +97,73 @@ function fullNameToAbbreviation(fullName) {
 
   return abbreviation;
 }
-
-function generateSymbol(assetType, regulation, companyName) {
+/**
+ * Trading symbol has a 11 character limit, restricting the company abbrevition to six characters,
+ * while the asset type is two characters and the regulation is three characters.
+ * 
+ * @param {*} assetType 
+ * @param {*} regulation 
+ * @param {*} companyName 
+ * @returns 
+ */
+function generateSymbol(assetType, regulation, companyName="") {
   let symbol = '';
 
-  const abbreviation = fullNameToAbbreviation(companyName);
+  const abbreviation = fullNameToAbbreviation(companyName).substr(0,5); // first six characters from the abbreviation
 
   // Add abbreviation
   if (abbreviation) {
     symbol += abbreviation.toUpperCase();
   } else {
-    symbol += 'UNK';
+    symbol += 'SAMPLE';
   }
 
   // Add prefix based on asset type
   switch (assetType) {
-    case 'stock':
-      symbol += 'STK';
+    case 'preferred':
+      symbol += 'KV';
+      break;
+    case 'common':
+      symbol += 'KX';
       break;
     case 'currency':
-      symbol += 'CUR';
+      symbol += 'RC';
       break;
     case 'commodity':
-      symbol += 'COM';
+      symbol += 'CM';
       break;
     case 'debt':
-      symbol += 'DBT';
+      symbol += 'DT';
+      break;
+    case 'employee':
+      symbol += 'EP';
+      break;
+    case 'merger':
+    case 'aquisition':
+      symbol += 'MA';
+      break;
+    case 'treasury':
+      symbol += 'TR';
       break;
     // Add more cases for other asset types if needed
     default:
-      symbol += 'UNK';
+      symbol += 'NO';
   }
 
   // Add suffix based on regulation
   switch (regulation) {
     case '506b':
-      symbol += '-506B';
+      symbol += '-5B';
       break;
     case '506c':
-      symbol += '-506C';
+      symbol += '-5C';
       break;
     case 'AT1':
-      symbol += '-AT1';
+      symbol += '-A1';
       break;
     // Add more cases for other regulation types if needed
     default:
-      symbol += '-UNK';
+      symbol += '-00';
   }
 
   return symbol;
