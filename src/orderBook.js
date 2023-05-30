@@ -27,7 +27,7 @@ const mongoose = require('mongoose');
 const Web3 = require('web3');
 
 // Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/redeecash.exchange', {
+mongoose.connect('mongodb://localhost:27017/redeecashexchange', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });

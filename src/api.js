@@ -10,11 +10,6 @@ const web3 = new Web3('http://localhost:8545'); // Update with your Ethereum nod
 const contract_owner_wallet = "";
 
 
-// Connect to MongoDB
-mongoose.connect('mongodb://localhost:27017/redeecash.exchange', {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
 
 // Define the user schema
 const userSchema = new mongoose.Schema({
@@ -183,20 +178,43 @@ const orderSchema = new mongoose.Schema({
 
   
 // Create the token model
-const Token = mongoose.model('Token', tokenSchema);
+let Token; // = mongoose.model('Token', tokenSchema);
 
 // Create the user model
-const User = mongoose.model('User', userSchema);
+let User; // = mongoose.model('User', userSchema);
 
 // Create the transfer agent model
-const TransferAgent = mongoose.model('TransferAgent', transferAgentSchema);
+let TransferAgent; // = mongoose.model('TransferAgent', transferAgentSchema);
 
 // Create the support ticket model
-const SupportTicket = mongoose.model('SupportTicket', supportTicketSchema);
+let SupportTicket; // = mongoose.model('SupportTicket', supportTicketSchema);
 
 // Create the order model
-const Order = mongoose.model('Order', orderSchema);
+let Order; // = mongoose.model('Order', orderSchema);
 
+async function init() {
+  // Connect to MongoDB
+  mongoose.connect('mongodb://localhost:27017/redeecashexchange', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
+
+  // Create the token model
+  Token = mongoose.model('Token', tokenSchema);
+
+  // Create the user model
+  User = mongoose.model('User', userSchema);
+
+  // Create the transfer agent model
+  TransferAgent = mongoose.model('TransferAgent', transferAgentSchema);
+
+  // Create the support ticket model
+  SupportTicket = mongoose.model('SupportTicket', supportTicketSchema);
+
+  // Create the order model
+  Order = mongoose.model('Order', orderSchema);
+
+}
 
 /**
  * User Registration
@@ -707,6 +725,7 @@ async function getOrderBook(tokenSymbol) {
 }
 
 module.exports = {
+    init,
     registerUser,
     registerTransferAgent,
     performKYCVerification,

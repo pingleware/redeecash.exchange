@@ -2,6 +2,7 @@
 
 const express = require('express');
 const {
+    init,
     registerUser,
     performKYCVerification,
     applyForTokenListing,
@@ -17,6 +18,8 @@ const {
 } = require("./api");
 
 const app = express();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 app.post('/register', (req, res) => {
   const { email, password } = req.body;
@@ -174,6 +177,7 @@ function generateSymbol(assetType, regulation, companyName="") {
 const port = 3000;
 
 app.listen(port, () => {
+  init();
   console.log(`Server is listening on port ${port}`);
 });
 
