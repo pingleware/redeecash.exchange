@@ -94,6 +94,7 @@ The following offering pools, which is a contract that can create unllimited off
 1. OfferingRegAT1Pool at 0x903a766aF1cE4662112DF8D1572aCD5dEA506b48
 2. Offering506bPool at 0x3a4e3341C285F0d69a70d8baF610bCD8dEA55F86
 3. Offering506cPool at 0x2640671f82aD2DC11A9F6128248532a1C3D72Bf2
+4. OfferingS1Pool at 0x6989ACA7f22403ab999D80c2F30fF2644098Ee08
 
 ### Connectine with REMIX
 
