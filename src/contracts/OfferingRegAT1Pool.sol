@@ -24,7 +24,22 @@ contract OfferingRegAT1Pool {
         uint256 offering = SafeMath.safeMul(tokens,price);
         require(offering <= 20000000,"exceeds the statutory maximum offering dollar amount");
 
-        address newToken = address(new OfferingRegAT1(name, symbol, tokens));
+        address newToken = address(new OfferingRegAT1(owner, name, symbol, tokens));
         tokenContracts[symbol] = newToken;
+    }
+
+    // attempting to invoke the token contract addTrasnferAgent directly using the tokenAddress, will
+    // not work but report an empty success. Which is desirable as this prevents unethical users from
+    // assigning themselves as a transfer agent and execute trades. The first safety protection on a
+    // public blockchain.
+    //
+    // The following code snippet attempts to add a transfer agent, but fails
+    //
+    //      const contract = new web3.eth.Contract(JSON.parse(tokenABI), tokenAddress);
+    //      const status = await contract.methods.addTransferAgent(transferAgent).call({from: poolContract});
+    function addTransferAgent(string memory symbol,address transferAgent) public isOwner {
+        require(tokenContracts[symbol] != address(0x0),"token not found for symbol");
+        OfferingRegAT1 token = OfferingRegAT1(tokenContracts[symbol]);
+        token.addTransferAgent(transferAgent);
     }
 }

@@ -5,15 +5,15 @@ import "./IOfferingRegAT1.sol";
 
 contract OfferingRegAT1 is IOfferingRegAT1 {
 
-    constructor(string memory _name,string memory _symbol, uint256 tokens) {
+    constructor(address _owner,string memory _name,string memory _symbol, uint256 tokens) {
         name = _name;
         symbol = _symbol; // Maximum 11 characters
         decimals = 0;
-        owner = msg.sender;
+        owner = _owner;
         whitelisted[owner] = true;
         // adjust the totalSupply to equal the quotient of the max offering of $20,000,000 and the share price (or par value, whichever is greater)
         _totalSupply = tokens;
-        balances[msg.sender] = _totalSupply;
+        balances[owner] = _totalSupply;
     }
 
     function getMaxOffering() public view override returns(uint256) {

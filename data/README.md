@@ -27,15 +27,7 @@ The application to assist in creating the corresponding XML file will be distrib
 
 ## Private Network
 
-The Offering506b contract is at address 0x61F666C30004b9056CF610c40cD1c1d5216fd681
-
-The Offering506b with transfer agent is at address 0xb2Bbb35136C3FBf5fBEEC676B71BFdbBCF04D935
-
-TokenExchange contract address is 0x90248f69088Bb2dd44D48BBc42Ba71771D6b58e3
-
-Regulation A Tier 1 offering contract at0x857e03790286dc4a8ca27Fba5777d8A1b9c2df69
-
-#### Example of using Regulation A Tier 1 offering
+### Example of using Regulation A Tier 1 offering
 
 1. Clone this project
 2. Start remix and copy OfferingRegAT1.sol to the IDE
@@ -91,10 +83,10 @@ The independent transfer agent, will use approveTransaction and transferFrom, wh
 
 The following offering pools, which is a contract that can create unllimited offerings of a specific type, are included with their contract address,
 
-1. OfferingRegAT1Pool at 0x903a766aF1cE4662112DF8D1572aCD5dEA506b48
-2. Offering506bPool at 0x3a4e3341C285F0d69a70d8baF610bCD8dEA55F86
-3. Offering506cPool at 0x2640671f82aD2DC11A9F6128248532a1C3D72Bf2
-4. OfferingS1Pool at 0x6989ACA7f22403ab999D80c2F30fF2644098Ee08
+1. OfferingRegAT1Pool at 0xaAA4ACB1C77a68c6907dF39566C4969feF37A81E
+2. Offering506bPool at 0x36607b5E27a39bd9F71B1e4cCbb0E9BA31d40C1c
+3. Offering506cPool at 0x9adD5Ea90aC1E7d8fED65dc5a35A079458980F17
+4. OfferingS1Pool at 0x3A2F0A48180b6bB956EDb2F491f2a1Ea6634Ab5c
 
 ### Connectine with REMIX
 
