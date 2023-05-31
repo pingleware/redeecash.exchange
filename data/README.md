@@ -83,10 +83,10 @@ The independent transfer agent, will use approveTransaction and transferFrom, wh
 
 The following offering pools, which is a contract that can create unllimited offerings of a specific type, are included with their contract address,
 
-1. OfferingRegAT1Pool at 0x3555ac3E15176E5961D6cd25e04264E51dcFf5b1
-2. Offering506bPool at 0x232d67BF96aAC19494928DA5EfbDA56e6fC1e94b
-3. Offering506cPool at 0xE7A80D3C5984f76929CAaF39017FBAae121D144F
-4. OfferingS1Pool at 0x69dd7B0969B1192e10A7c0d0C800c82B5FCa897f
+1. OfferingRegAT1Pool at 0x01506e655F44d4C023fA5Fc04DDDa4b3053dEF8d
+2. Offering506bPool at 0x696AaA1720a94A24E08CE8E2e7a87957b8038DbA
+3. Offering506cPool at 0x7bC96E54e8dc6e1cd1Df083F6AF51EE6064a75be
+4. OfferingS1Pool at 0x19451463d200B426E95329E366B9a241681C5828
 
 ### Connectine with REMIX
 

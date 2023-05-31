@@ -21,11 +21,11 @@ contract OfferingS1 is IOfferingS1 {
         symbol = _symbol; // Maximum 11 characters
         decimals = 0;
         owner = _owner;
-        whitelisted[owner] = true;
         // adjust the totalSupply to equal the quotient of the max offering of $20,000,000 and the share price (or par value, whichever is greater)
         _totalSupply = tokens;
         // Give the issuer the total supply and authorize as a transfer agent
         issuer = _issuer;
+        whitelisted[issuer] = true;
         balances[issuer] = _totalSupply;
         transfer_agents[issuer] = true;
         _transfer_agents.push(issuer);
@@ -72,11 +72,11 @@ contract OfferingS1 is IOfferingS1 {
      */ 
     function mint(uint256 _amount) public override returns (bool) {
         require(_amount >= 0, "Invalid amount");
-        require(owner == msg.sender, "not authorized, only the owner can mint more tokens");
+        require(issuer == msg.sender, "not authorized, only the owner can mint more tokens");
         require(_totalSupply < MAX_OFFERING_SHARES,"maximum offering has been reached, minting is disabled");
         _totalSupply = SafeMath.safeAdd(_totalSupply, _amount);
-        balances[owner] = SafeMath.safeAdd(balances[owner], _amount);
-        emit Transfer(address(0), owner, _amount);
+        balances[msg.sender] = SafeMath.safeAdd(balances[msg.sender], _amount);
+        emit Transfer(address(0), msg.sender, _amount);
         return true;
     }
     
@@ -85,26 +85,34 @@ contract OfferingS1 is IOfferingS1 {
      */ 
     function burn(uint256 _amount) public override returns (bool) {
         require(_amount >= 0, "Invalid amount");
-        require(owner == msg.sender, "not authorized, only the owner can burn more tokens");
+        require(issuer == msg.sender, "not authorized, only the owner can burn more tokens");
         require(_amount <= balances[msg.sender], "Insufficient Balance");
         require(_totalSupply > 0,"no remaining tokens to burn");
         _totalSupply = SafeMath.safeSub(_totalSupply, _amount);
-        balances[owner] = SafeMath.safeSub(balances[owner], _amount);
-        emit Transfer(owner, address(0), _amount);
+        balances[msg.sender] = SafeMath.safeSub(balances[msg.sender], _amount);
+        emit Transfer(msg.sender, address(0), _amount);
         return true;
     }
 
     function setCUSIP(string memory cusip) override public isTransferAgent {
+        string memory oldCUSIP = CUSIP;
         CUSIP = cusip;
+        emit UpdateCUSIP(msg.sender,CUSIP,oldCUSIP);
     }
     function setSECFilenumber(string memory fileNumber) override public isTransferAgent {
+        string memory oldSECFileNumber = SEC_FILENUMBER;
         SEC_FILENUMBER = fileNumber;
+        emit UpdateSECFileNumber(msg.sender,SEC_FILENUMBER,oldSECFileNumber);
     }
     function setMaxOffering(uint256 value) override public isTransferAgent {
+        uint256 oldMaxOffering = MAX_OFFERING;
         MAX_OFFERING = value;
+        emit UpdateMaxOffering(msg.sender,MAX_OFFERING,oldMaxOffering);
     }
     function setMaxShares(uint256 value) override public isTransferAgent {
+        uint256 oldMaxShares = MAX_OFFERING_SHARES;
         MAX_OFFERING_SHARES = value;
+        emit UpdateMaxShares(msg.sender,MAX_OFFERING_SHARES,oldMaxShares);
     }
 
 }

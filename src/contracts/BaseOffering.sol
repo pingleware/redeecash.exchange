@@ -30,6 +30,10 @@ abstract contract BaseOffering is IERC20TOKEN {
 
     event Disapproval(address indexed investor, uint tokens, string reason);
     event Request(address investor,uint tokens,bool buy);
+    event UpdateCUSIP(address transferAgent, string newCUSIP, string oldCUSIP);
+    event UpdateSECFileNumber(address transferAgent, string newSECFileNumber, string oldSECFileNumber);
+    event UpdateMaxOffering(address transferAgent, uint256 newMaxOffering, uint256 oldMaxOffering);
+    event UpdateMaxShares(address transferAgent, uint256 newShares,uint256 oldhares);
 
     modifier isAuthorized() {
         require(whitelisted[msg.sender],"not authorized");
@@ -40,6 +44,10 @@ abstract contract BaseOffering is IERC20TOKEN {
         require(transfer_agents[msg.sender],"not authorized transfer agent");
         _;
     } 
+
+    function getOwner() public view returns(address) {
+        return owner;
+    }
 
     function addInvestor(address investor, uint investor_type)
         public isTransferAgent
