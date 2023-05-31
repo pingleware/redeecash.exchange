@@ -94,7 +94,7 @@ Start GANACHE,
 
     npm run start:ganache
 
-then 
+then
 
     Choose Dev - Ganache Provider
 
