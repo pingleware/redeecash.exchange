@@ -2,6 +2,21 @@
 
 This project uses the mongoose database. Full documentation here: [https://docs.mongodb.com](https://docs.mongodb.com/manual/tutorial/install-mongodb-on-os-x/)
 
+## Token Data Storage
+
+The registered token offerings are sve in the mongoose data collection as,
+
+```
+_id: 64761fd73d0cda8cffe29ce1
+name: "PRESSPAGE ENTERTAINMENT INC REG A TIER 1"
+symbol: "PEIKX-A1"
+description: "Regulation A Tier 1 offering"
+contractAddress: "0xf07fAf1FB22eB7Ee88B701293d6C41DD951954fb"
+abi: "WwoJewoJCSJpbnB1dHMiOiBbCgkJCXsKCQkJCSJpbnRlcm5hbFR5cGUiOiAic3RyaW5nIi…"
+secFileNumber: "024-00000"
+securityType: "REGAT1"
+```
+
 ### Key Features of MongoDB
 
 MongoDB, in recent years, has grown to become one of the most popular NoSQL databases that are used by thousands of companies worldwide. The database provides numerous features that have fueled its rapid adoption. Below listed are a few key features of MongoDB:
