@@ -60,3 +60,73 @@ Now press the At Address button. DO NOT PRESS Deploy unless you want a new contr
 ![1685536613928](image/BUILDING/1685536613928.png)
 
 You should see the interface for the contract in the Deployed Contracts section.
+
+### Creating a new listing
+
+In this example, we are going to create a new listing for an exempt offering under Reg D Rule 506(c), we expand the createToken interface,
+
+![1685556461107](image/BUILDING/1685556461107.png)
+
+There are five parameters,
+
+    - issuer, is a the wallet for the company. The issuer will also be the transfer agent repsonsible for transferring tokens to whitelisted investors. The contract own can only asigned additional transfer agents and whitelist investors.
+
+    - name, this is a desscriptive name of the offering,
+
+    - symbol, the trading symbol. Using the API route /symbol/new while supplying the asset type, regulation rule an ompany name, will cerate up to an 11 character trading symbol.
+
+    - tokens, the number or total supply of the tokens issued. The issuer wallet will initially hold these tokens
+
+    - price, the initial price for a single token.
+
+presing the transaction button will create a new contract for this oferring. 
+
+#### Creating a Trading Symbol
+
+From a new terminal in the src/ directory, start the server,
+
+    npm start
+
+next we need a company that has issued an exemplt 506(c) offering, so we search SEC.GOV EDGAR,
+
+![1685557250229](image/BUILDING/1685557250229.png)
+
+and we see XYZ REAL ESTATE GROUP LLC, using postman connected to the API,
+
+![1685557368969](image/BUILDING/1685557368969.png)
+
+We specify asset type as preferred, as all exempt offerings on RedeeCash Echange are preferred equity offerings as well as the regulation of 506c, the symbol generated is
+
+    XREGLKV-5C
+
+this will be the symbol in the createToken procedure,
+
+The total offering amount in this exempt offering is 30,000,000,
+
+![1685557615094](image/BUILDING/1685557615094.png)
+
+and since no price per share was specified, we will set the price per share at $1  and total tokens of 20,000,000, the input parameters are set as follows,
+
+![1685558366153](image/BUILDING/1685558366153.png)
+
+We are ready to press the transact button to create the new exempt offering token,
+
+One the new token has been created, we need to get the new token contract address, by providing the symbol used,
+
+![1685558255188](image/BUILDING/1685558255188.png)
+
+and pressing the call button returns,
+
+![1685558437477](image/BUILDING/1685558437477.png)
+
+with the new token contract of **0x54cBFca696D7b82494a8f86F030db0585eF62bc1**
+
+Then choosing the Offering506.sol contract and provide the At Address parameter with **0x54cBFca696D7b82494a8f86F030db0585eF62bc1**,
+
+![1685558618503](image/BUILDING/1685558618503.png)
+
+and pressing At Address button, 
+
+![1685558708088](image/BUILDING/1685558708088.png)
+
+which permits us to interact with the contract, remember that the account  0xa2A1F479f07e4740313B0C26572Ab13F50b9C362 is the issuer and initial transfer agent,
