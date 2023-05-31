@@ -15,7 +15,7 @@ pragma solidity >=0.4.22 <0.9.0;
 import "./OfferingS1.sol";
 
 contract OfferingS1Pool {
-        mapping(string => address) public tokenContracts;
+    mapping(string => address) public tokenContracts;
 
     address owner;
 
@@ -28,12 +28,17 @@ contract OfferingS1Pool {
         _;
     }
 
-    function createToken(string memory name, string memory symbol, uint tokens, uint price) public isOwner {
+    function getOwner() public view returns (address) {
+        return owner;
+    }
+
+
+    function createToken(address issuer, string memory name, string memory symbol, uint tokens, uint price) public isOwner {
         require(tokenContracts[symbol] == address(0), "Token already exists");
 
         if (price > 0) {}
 
-        address newToken = address(new OfferingS1(owner, name, symbol, tokens));
+        address newToken = address(new OfferingS1(owner, issuer, name, symbol, tokens));
         tokenContracts[symbol] = newToken;
     }
 

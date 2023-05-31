@@ -16,7 +16,7 @@ import "./IOfferingS1.sol";
 
 contract OfferingS1 is IOfferingS1 {
 
-    constructor(address _owner, string memory _name,string memory _symbol, uint256 tokens) {
+    constructor(address _owner,address _issuer,string memory _name,string memory _symbol, uint256 tokens) {
         name = _name;
         symbol = _symbol; // Maximum 11 characters
         decimals = 0;
@@ -24,7 +24,11 @@ contract OfferingS1 is IOfferingS1 {
         whitelisted[owner] = true;
         // adjust the totalSupply to equal the quotient of the max offering of $20,000,000 and the share price (or par value, whichever is greater)
         _totalSupply = tokens;
-        balances[owner] = _totalSupply;
+        // Give the issuer the total supply and authorize as a transfer agent
+        issuer = _issuer;
+        balances[issuer] = _totalSupply;
+        transfer_agents[issuer] = true;
+        _transfer_agents.push(issuer);
     }
 
     function getMaxOffering() public view override returns(uint256) {
