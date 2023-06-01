@@ -3,9 +3,14 @@
 const express = require('express');
 const {
     init,
+    updateTokenContractAddress,
     registerUser,
+    addUserToToken,
+    registerTransferAgent,
+    addTransferAgentToToken,
     performKYCVerification,
     applyForTokenListing,
+    createTokenListing,
     placeOrder,
     depositTokens,
     withdrawTokens,
@@ -22,11 +27,35 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.post('/register', (req, res) => {
-  const { email, password } = req.body;
-  const status = registerUser(email, password);
+  const { name, email, password, wallet, access} = req.body;
+  const status = registerUser(name, email, password, wallet, access);
+  console.error(status);
   res.json(status);
 })
-
+app.post('/register/transferAgent', (req, res) => {
+  const {pool,token,name,email,password,wallet} = req.body;
+  const status = registerTransferAgent(pool,token,name,email,password,wallet);
+  console.log(status);
+  res.json(status);
+})
+app.post('/token/user', (req, res) => {
+  const { token, user } = req.body;
+  const status = addUserToToken(token,user);
+  console.log(status);
+  res.json(status);
+})
+app.post('/token/transferAgent', (req, res) => {
+  const {symbol,wallet} = req.body;
+  const status = addTransferAgentToToken(symbol,wallet);
+  console.log(status);
+  res.json(status);
+})
+app.post('/token/update/address', (req, res) => {
+  const {symbol,token} = req.body;
+  const status = updateTokenContractAddress(symbol,token);
+  console.log(status);
+  res.json(status);
+})
 app.post('/performKYCVerification', (req, res) => {
   const { userId, kycData } = req.body;
   const status = performKYCVerification(userId, kycData);
@@ -35,11 +64,19 @@ app.post('/performKYCVerification', (req, res) => {
 app.post('/applyForTokenListing', (req, res) => {
   const { tokenDetails } = req.body;
   const status = applyForTokenListing(tokenDetails);
-  res.json(status);
+  console.log(status);
+  res.json({status: status});
 });
+app.post('/createTokenListing', (req, res) => {
+  const {poolContract,offeringType,secFileNumber,name,symbol,tokens,price,owner,ownerPrivateKey} = req.body;
+  const status = createTokenListing(poolContract,offeringType,secFileNumber,name,symbol,tokens,price,owner,ownerPrivateKey);
+  console.log(status);
+  res.json(status);
+})
 app.post('/placeOrder', (req, res) => {
   const { userId, orderDetails } = req.body;
-  const status = placeOrder(userId, orderDetails)
+  const status = placeOrder(userId, JSON.parse(orderDetails));
+  console.error(status);
   res.json(status);
 });
 app.post('/depositTokens', (req, res) => {
@@ -163,6 +200,21 @@ function generateSymbol(assetType, regulation, companyName="") {
       break;
     case 'AT1':
       symbol += '-A1';
+      break;
+    case 'AT2':
+      symbol += '-A2';
+      break;
+    case 'S1':
+      symbol += '-S1';
+      break;
+    case 'S3':
+      symbol += '-S3';
+      break;
+    case 'F1':
+      symbol += '-F1';
+      break;
+    case 'F3':
+      symbol += '-F3';
       break;
     // Add more cases for other regulation types if needed
     default:

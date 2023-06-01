@@ -25,6 +25,8 @@
 
 const mongoose = require('mongoose');
 const Web3 = require('web3');
+// Initialize Web3
+const web3 = new Web3(new Web3.providers.HttpProvider('http://127.0.0.1:8545')); // Update with your Ethereum node URL
 
 // Connect to MongoDB
 mongoose.connect('mongodb://localhost:27017/redeecashexchange', {
@@ -51,7 +53,7 @@ class OrderBook {
     }
 
     // create a listing
-    async createTokenListing(offertype,secFileNumber,name,symbol,tokens,price,ownerId) {
+    static async createTokenListing(offertype,secFileNumber,name,symbol,tokens,price,ownerId) {
         var abi = `[
             {
                 "inputs": [],
@@ -835,36 +837,34 @@ class OrderBook {
             }
         ]`;
 
-        switch(offertype) {
-            case 'REGAT1':
-                {
-                    var contractAddress = "0x903a766aF1cE4662112DF8D1572aCD5dEA506b48";
-                }
-                break;
-            case '506B':
-                {
-                    var contractAddress = "0x3a4e3341C285F0d69a70d8baF610bCD8dEA55F86";
-                }
-                break;
-            case '506C':
-                {
-                    var contractAddress = "0x2640671f82aD2DC11A9F6128248532a1C3D72Bf2";
-                }
-                break;
+        try {
+            switch(offertype) {
+                case 'REGAT1':
+                    {
+                        var contractAddress = "0x903a766aF1cE4662112DF8D1572aCD5dEA506b48";
+                    }
+                    break;
+                case '506B':
+                    {
+                        var contractAddress = "0x3a4e3341C285F0d69a70d8baF610bCD8dEA55F86";
+                    }
+                    break;
+                case '506C':
+                    {
+                        var contractAddress = "0x2640671f82aD2DC11A9F6128248532a1C3D72Bf2";
+                    }
+                    break;
+            }
+            const contract = new web3.eth.Contract(JSON.parse(abi), contractAddress);
+            await contract.methods.createToken(name,symbol,tokens,price).call({from: ownerId});
+            const tokenAddress = await contract.methods.tokenContracts(symbol); 
+            console.log(tokenAddress);
+            //const tokenContract = new web3.eth.Contract(JSON.parse(tokenABI), tokenAddress);
+            //await tokenContract.methods.setSECFilenumber(secFileNumber).call({from: ownerId});
+            return {tokenAddress, tokenABI};    
+        } catch(error) {
+            console.error(error);
         }
-        const contract = new web3.eth.Contract(abi, contractAddress);
-        await contract.methods.createToken({name: name, symbol: symbol, tokens: tokens, price: price}).call({from: ownerId});
-        const tokenAddress = await contract.methods.tokenContracts({symbol: symbol}); 
-
-        var token = {name: name, symbol: symbol, description: name, contractAddress: tokenAddress, abi: tokenABI, secFileNumber: secFileNumber, securityType: offertype};
-        mongoose.collection("Token").insertOne(token,async function(err, res) {
-            mongoose.collection("Token").find({}).toArray(function(err, result) {
-                result.forEach(async function(token){
-                    const tokenContract = new web3.eth.Contract(token.abi, token.contractAddress);
-                    await tokenContract.methods.addTransferAgent({transferAgent: this.transferAgent});        
-                })
-            });    
-        });
     }
     
     // Add a buy order to the order book

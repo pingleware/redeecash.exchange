@@ -4,11 +4,15 @@ const mongoose = require('mongoose');
 const Web3 = require('web3');
 const OrderBook = require('./orderBook');
 
+const {    
+  tokenABI,
+  poolABI
+} = require('./abi');
+
 // Initialize Web3
-const web3 = new Web3('http://localhost:8545'); // Update with your Ethereum node URL
+const web3 = new Web3('http://127.0.0.1:8545'); // Update with your Ethereum node URL
 
 const contract_owner_wallet = "";
-
 
 
 // Define the user schema
@@ -192,6 +196,7 @@ let SupportTicket; // = mongoose.model('SupportTicket', supportTicketSchema);
 // Create the order model
 let Order; // = mongoose.model('Order', orderSchema);
 
+
 async function init() {
   // Connect to MongoDB
   mongoose.connect('mongodb://localhost:27017/redeecashexchange', {
@@ -227,7 +232,20 @@ async function init() {
  * @param {number} access 0=non-accredited;1=accredited;2=affililate;4=broker-dealer
  * @returns {object} status 
  */
-async function registerUser(email, password, wallet, access) {
+async function registerUser(name, email, password, wallet, access) {
+  try {
+      // Create a new user instance
+      const user = new User({ name, email, password, wallet, access });
+  
+      // Save the user to the database
+      await user.save();
+
+      return { success: true, message: 'User registered successfully' };
+  } catch(error) {
+    console.error(error);
+    return { success: false, message: 'Error registering user', error: error };
+  }
+  /*
   mongoose.collection('Token').find({symbol: this.tokenSymbol},async function(err, token){
     const contractAddress = token[0].contractAddress;
     const abi = token[0].abi;
@@ -259,40 +277,84 @@ async function registerUser(email, password, wallet, access) {
       return { success: false, message: 'Error registering user' };
     }    
   });
+  */
 }
 
-async function registerTransferAgent(email,password,wallet) {
-  mongoose.collection('Token').find({symbol: this.tokenSymbol},async function(err, token){
-    const contractAddress = token[0].contractAddress;
-    const abi = token[0].abi;
-    const contract = new web3.eth.Contract(abi, contractAddress);
+async function updateTokenContractAddress(symbol, tokenAddress) {
+  try {
+    const status = await Token.updateOne({contractAddress: tokenAddress}).where('symbol').eq(symbol);
+    console.log(status);
+    return { status: true, message: status };
+  } catch(error) {
+    return { status: false, error: error };
+  }
+}
 
-    try {
-      // Validate email and password
-      if (!validateEmail(email)) {
-        return { success: false, message: 'Invalid email format' };
-      }
-  
-      if (!validatePassword(password)) {
-        return {
-          success: false,
-          message: 'Password must be at least 8 characters long',
-        };
-      }
-  
-      // Create a new user instance
-      const transferAgent = new TransferAgent({ email, password, wallet });
-  
-      // Save the user to the database
-      await transferAgent.save();
+async function addUserToToken(tokenAddress, userAddress) {
 
-      await contract.methods.addTransferAgent({transferAgent: wallet});
-  
-      return { success: true, message: 'Transfer Agent registered successfully' };
-    } catch (error) {
-      return { success: false, message: 'Error registering Transfer Agent ' };
-    }    
-  });
+  //const contract = new web3.eth.Contract(JSON.parse(abi), tokenAddress);
+  //const transferAgent = '0xB72621c155fB0d8Dcc9b65301FeB35618aF3d8Eb';
+  //await contract.methods.addTransferAgent(transferAgent).call({from: '0x5EaF72deD2e4E255C228f9070501974D3572c5d4'});
+  //await contract.methods.addInvestor(userAddress, access).call({from: transferAgent});
+
+  return {status: true, message: 'investor added successfully'};
+}
+
+async function registerTransferAgent(poolContract,tokenAddress,name,email,password,wallet) {
+  try {
+    // Validate email and password
+    //if (!validateEmail(email)) {
+    //  return { success: false, message: 'Invalid email format' };
+   // }
+
+    //if (!validatePassword(password)) {
+    //  return {
+    //    success: false,
+    //    message: 'Password must be at least 8 characters long',
+    //  };
+    //}
+
+    // Create a new user instance
+    const transferAgent = new TransferAgent({ name, email, password, wallet });
+
+    // Save the user to the database
+    const status1 = await transferAgent.save();
+    console.log(status1);
+
+    const contract = new web3.eth.Contract(JSON.parse(tokenABI), tokenAddress);
+    const status = await contract.methods.addTransferAgent(wallet).call({from: poolContract});
+    console.log(status);
+    return { success: true, message: 'Transfer Agent registered successfully', status: status };
+  } catch (error) {
+    return { success: false, message: 'Error registering Transfer Agent ', error: error };
+  }    
+}
+
+
+async function addTransferAgentToToken(symbol,transferAgent) {
+  try {
+    const token = await Token.find({}).where('symbol').eq(symbol).exec();
+    if (token.length > 0) {
+      //console.log(token)
+      const tokenAddress = token[0].contractAddress;
+      console.log(`tokenAddress: ${tokenAddress}`);
+      const contract = await new web3.eth.Contract(JSON.parse(tokenABI), tokenAddress);
+      console.log(await contract.methods.symbol())
+      //console.log(contract.methods)
+      ///await contract.methods.getOwner().call().then(function(owner) {
+      //  console.log(owner);
+      //  return tokenAddress;  
+      //});
+      //const owner = await contract.methods.getOwner().call();
+      //console.log(owner);
+    }
+    //const contract = new web3.eth.Contract(JSON.parse(poolABI), poolContract);
+    //const status = await contract.methods.addTransferAgent(symbol,transferAgent).call({from: owner});
+    //console.log(status);
+    //return { success: true, message: 'Transfer Agent added to token successfully', status: status };
+  } catch(error) {
+    return { success: false, message: 'Error adding Transfer Agent to token', error: error };
+  }
 }
 
 /**
@@ -343,6 +405,9 @@ async function performKYCVerification(userId, kycData) {
  *   symbol: 'MTK',
  *   description: 'My custom token',
  *   contractAddress: '0x123456789abcdef',
+ *   abi; '',
+ *   secFileNumber: '',
+ *   securityType: ''
  * };
  * 
  * applyForTokenListing(newToken)
@@ -354,16 +419,56 @@ async function performKYCVerification(userId, kycData) {
  */
 async function applyForTokenListing(tokenDetails) {
     try {
-        // Create a new token instance
-        const token = new Token(tokenDetails);
-    
-        // Save the token to the database
-        await token.save();
-    
-        return { success: true, message: 'Token listing applied successfully' };
+      var token = new Token(JSON.parse(tokenDetails));
+      const status = await token.save();
+      console.error(status);
+      return { success: true, message: `listing applied successfully`, status: status };
     } catch (error) {
-        return { success: false, message: 'Error applying for token listing' };
+        return { success: false, message: 'Error applying for token listing', error: error };
     }
+}
+
+async function createTokenListing(poolContract,offeringType,secFileNumber,name,symbol,tokens,price,owner,ownerPrivateKey) {
+  try {
+    const account = owner; // Replace with your Ethereum account address
+    const privateKey = ownerPrivateKey; // Replace with your account's private key
+
+    const contract = new web3.eth.Contract(JSON.parse(poolABI), poolContract);
+
+    await contract.methods.createToken(name,symbol,tokens,price).call({from: account});
+    /*
+    const txObject = contract.methods.createToken(name,symbol,tokens,price); // Replace with your contract's function name and arguments
+    console.log(txObject)
+
+    const gas = await txObject.estimateGas();
+    console.log(`Gas: ${gas}`)
+    const gasPrice = await web3.eth.getGasPrice();
+    console.log(`Gas Price: ${gasPrice}`)
+
+    const tx = txObject.send({
+      from: account,
+      gas: gas,
+      gasPrice: gasPrice,
+    });
+    console.log(`tx: ${tx}`)
+
+    const signedTx = await web3.eth.accounts.signTransaction(tx, privateKey);
+    console.log(`singedTX: ${signedTx}`)
+
+    const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
+    console.log(`receipt: ${receipt}`)
+    */
+    const tokenAddress = await contract.methods.tokenContracts(symbol); 
+    console.log(`tokenAddress: ${tokenAddress}`)
+    const tokenDetails = {name: name, symbol: symbol, description: name, contractAddress: tokenAddress, abi: btoa(abi), secFileNumber: secFileNumber, secuortyType: offeringType};
+    const token = Token(tokenDetails);
+    const result = await  token.save();
+
+    return {status: true, receipt: receipt, token: token};
+  } catch (error) {
+    console.error(error);
+    return {status: false, error: error};
+  }
 }
   
 /**
@@ -398,6 +503,7 @@ async function placeOrder(userId, orderDetails) {
         const orderBook = new OrderBook(orderDetails.tokenSymbol);
 
         orderBook.matchOrders();
+
     
         return { success: true, message: 'Order placed successfully', orderbook: orderBook.printOrderBook() };
     } catch (error) {
@@ -726,10 +832,14 @@ async function getOrderBook(tokenSymbol) {
 
 module.exports = {
     init,
+    updateTokenContractAddress,
     registerUser,
+    addUserToToken,
     registerTransferAgent,
+    addTransferAgentToToken,
     performKYCVerification,
     applyForTokenListing,
+    createTokenListing,
     placeOrder,
     depositTokens,
     withdrawTokens,
