@@ -3,7 +3,7 @@ const Web3 = require('web3');
 const web3 = new Web3('http://127.0.0.1:8545');
 
 // Set the contract address and ABI
-const oracleContractAddress = '0x65FC2458D5867C9Fe31d5bEddBa6fb72cC564B4F';
+const oracleContractAddress = '0x50fF7fa753C23c433bF37B65772d991e576B8129';
 const oracleContractABI = [
         {
             "anonymous": false,
