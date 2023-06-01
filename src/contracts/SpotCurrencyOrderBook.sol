@@ -1,12 +1,15 @@
 // SPDX-License-Identifier: CC-BY-4.0
 pragma solidity >=0.4.22 <0.9.0;
 
+import "./SpotCurrencyToken.sol";
 
 // This contract represents an order book for currency spot trading
 contract SpotCurrencyOrderBook {
     address public owner;
+    mapping(string => address) public tokenContracts;
 
     struct Order {
+        address token;
         address trader;
         uint256 amount;
         uint256 price;
@@ -18,7 +21,7 @@ contract SpotCurrencyOrderBook {
     mapping(string => uint256) public highestBid;
     mapping(string => uint256) public lowestAsk;
 
-    mapping(address => bool) public transferAgents;
+    mapping(address => uint256) public traders;
 
     // Event emitted when a new buy order is placed
     event BuyOrderPlaced(
@@ -54,29 +57,34 @@ contract SpotCurrencyOrderBook {
         _;
     }
 
-    modifier isTransferAgent() {
-        require(transferAgents[msg.sender],"Not a transfer agent");
-        _;
+    function balanceOf(address wallet) public view returns (uint256) {
+        return traders[wallet];
     }
 
-    function addTransferAgent(address wallet) public isOwner {
-        require(!transferAgents[wallet],"already a registered transfer agent");
-        transferAgents[wallet] = true;
+    function createToken(address issuer, string memory name, string memory symbol, uint tokens,uint8 _decimals,uint256 _mintingFeePercentage) public isOwner {
+        require(tokenContracts[symbol] == address(0), "Token already exists");
+        address newToken = address(new SpotCurrencyToken(name, symbol, _decimals, tokens, owner, issuer, _mintingFeePercentage));
+        tokenContracts[symbol] = newToken;
     }
 
     // Function to place a buy order
     function placeBuyOrder(
+        address _wallet,
         string calldata _currencyPair,
         uint256 _amount,
         uint256 _price
-    ) public isTransferAgent {
+    ) public {
         require(_amount > 0, "Invalid amount");
         require(_price > 0, "Invalid price");
+        require(tokenContracts[_currencyPair] != address(0),"not a listed currency pair");
 
-        Order memory order = Order(msg.sender, _amount, _price);
+        ISpotCurrencyToken token = ISpotCurrencyToken(tokenContracts[_currencyPair]);
+        require(token.checkWhitelisted(),"not authorized to place buy order");
+
+        Order memory order = Order(tokenContracts[_currencyPair],_wallet, _amount, _price);
         buyOrders[_currencyPair].push(order);
 
-        emit BuyOrderPlaced(_currencyPair, msg.sender, _amount, _price);
+        emit BuyOrderPlaced(_currencyPair, _wallet, _amount, _price);
 
         updateQuoting(_currencyPair);
         matchOrders(_currencyPair);
@@ -84,17 +92,23 @@ contract SpotCurrencyOrderBook {
 
     // Function to place a sell order
     function placeSellOrder(
+        address _wallet,
         string calldata _currencyPair,
         uint256 _amount,
         uint256 _price
-    ) public isTransferAgent {
+    ) public {
         require(_amount > 0, "Invalid amount");
         require(_price > 0, "Invalid price");
+        require(tokenContracts[_currencyPair] != address(0),"not a listed currency pair");
 
-        Order memory order = Order(msg.sender, _amount, _price);
+        ISpotCurrencyToken token = ISpotCurrencyToken(tokenContracts[_currencyPair]);
+        require(token.checkTransferAgent(),"not authorized to place sell order");
+        require(token.getBalanceFrom(_wallet) >= _amount,"insufficient balance in sellers account");
+
+        Order memory order = Order(tokenContracts[_currencyPair],_wallet, _amount, _price);
         sellOrders[_currencyPair].push(order);
 
-        emit SellOrderPlaced(_currencyPair, msg.sender, _amount, _price);
+        emit SellOrderPlaced(_currencyPair, _wallet, _amount, _price);
 
         updateQuoting(_currencyPair);
         matchOrders(_currencyPair);
@@ -147,6 +161,13 @@ contract SpotCurrencyOrderBook {
                     tradeAmount,
                     tradePrice
                 );
+
+                // transfer the tokens on the contract
+                ISpotCurrencyToken token = ISpotCurrencyToken(tokenContracts[_currencyPair]);
+                token.updateTransferAllocation(token.getIssuer(),sellOrder.trader,tradeAmount);
+                token.updateTransferAllocation(token.getIssuer(),buyOrder.trader,tradeAmount);
+                token.transferFrom(sellOrder.trader,buyOrder.trader,tradeAmount);
+
 
                 // Update order amounts and remove filled orders
                 if (buyOrder.amount <= sellOrder.amount) {
