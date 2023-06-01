@@ -8,6 +8,8 @@ One such method of correlating gold reserves to a digital currency, is each time
 
 The issuer does not have custody of the gold reserves as these are at the forex broker, and does not have custody of the traders tokens, as those tokens reside in the traders wallet.
 
+Digital Currency trading does not use automated maker makers nor liquidity providers, but uses an algorithmic matching algorithm in the SpotCurrencyOrderBook.sol
+
 ## Registering a new Token
 
 ![1685631745204](image/DIGITALCURRENCY/1685631745204.png)
