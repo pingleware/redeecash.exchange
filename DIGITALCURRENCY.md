@@ -62,14 +62,28 @@ then verifying the token balance,
 
 ![1685643594089](image/DIGITALCURRENCY/1685643594089.png)
 
+and the contract balance showing the fee addition
+
+![1685648080524](image/DIGITALCURRENCY/1685648080524.png)
+
 ## Placing a Buy Order
 
 As long as the trader/investor has been whitelisted and there are gold reserves, a trader can request a buy order of tokens from other traders that have a token balance.
 
 ![1685644490147](image/DIGITALCURRENCY/1685644490147.png)
 
+checkingg the buy orders status,
+
+![1685648338201](image/DIGITALCURRENCY/1685648338201.png)
+
 ## Placing a Sell Order
 
 The trader/investor must be whitelisted and have a token balance they have previously minted before they can place a sell order. Both the buy and sell order do not create or deplete tokens, they providing the trading mechanism between the investor wallets.
 
 ![1685644565383](image/DIGITALCURRENCY/1685644565383.png)
+
+and checking the status of the sell order,
+
+![1685648414547](image/DIGITALCURRENCY/1685648414547.png)
+
+![1685648487678](image/DIGITALCURRENCY/1685648487678.png)
