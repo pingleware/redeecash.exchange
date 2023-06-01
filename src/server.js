@@ -22,6 +22,7 @@ const {
     getOrderBook
 } = require("./api");
 
+
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -123,6 +124,22 @@ app.post('/symbol/new', (req, res) => {
 
   const symbol = generateSymbol(assetType, regulation, company);
   res.json({symbol});
+})
+app.get('/quote/update', async (req, res) =>  {
+  const fetchUrl = require("fetch").fetchUrl;
+  const handleProvideDataRequest = require('./oracleRequest');
+
+
+  fetchUrl('https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/xau/usd.json', async function(error, meta, body){
+      const quote = JSON.parse(body.toString());
+      const xauusd = quote.usd;
+      console.log(xauusd);
+
+      const transaction = await handleProvideDataRequest(1,xauusd);
+      res.json(transaction);  
+  });
+
+  // https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/xau/usd.json
 })
 
 function fullNameToAbbreviation(fullName) {
@@ -226,7 +243,7 @@ function generateSymbol(assetType, regulation, companyName="") {
 
 
 
-const port = 3000;
+const port = 3001;
 
 app.listen(port, () => {
   init();
