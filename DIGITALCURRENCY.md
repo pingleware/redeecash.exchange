@@ -18,7 +18,7 @@ To obtain the new token contract address requires a look up via the symbol,
 
 ![1685632229458](image/DIGITALCURRENCY/1685632229458.png)
 
-### Adding a Trader
+## Adding a Trader
 
 Choosing another wallet, and accessing from the owner, as the contract owner white llists wallets,
 
@@ -28,7 +28,7 @@ Now this wallet can mint, buy and sell (transfer) tokens, but before this wallet
 
 The process begins off chain using a money transmitter service like stripe or paypal, for the owner of this wallet to send monies for the amount tokens desired? The amount is determined by the exchange rate of gold. Once the issuer has received the funds from trader/investor, the issuer would purchase the dollar amount of XAUUSD or equivalent from a licensed forex broker, and set the allocation for this wallet.
 
-### Set Investor Allocation
+## Set Investor Allocation
 
 Accessing from the issuer's wallet,
 
@@ -36,11 +36,40 @@ Accessing from the issuer's wallet,
 
 Now the trade can mint tokens to trade. The fee is also paid at the of minting. This fee permits income generation for the issuer, when new tokens are minted, so the gold reserves remain untoched until withdrawn on the behalf of the trader/investor.
 
-### Adding to the Gold Reserves
+## Adding to the Gold Reserves
 
 Accessing from the issuer wallet,
 
+![1685643101644](image/DIGITALCURRENCY/1685643101644.png)
 
-### Minting New Tokens
+and checking the gold reserves,
 
-Accessing from the trader/investor wallet,
+![1685643167421](image/DIGITALCURRENCY/1685643167421.png)
+
+The issuer has hypothetically bought 10000 llots of XAUUSD from a FOREX broker before updating the contract gold reserves. If there were no gold reserves, the minting operation would fail.
+
+## Minting New Tokens
+
+Accessing from the trader/investor wallet, making sure the value is greater than zero to pay the minting fee,
+
+![1685643436109](image/DIGITALCURRENCY/1685643436109.png)
+
+and then to mint the 1000 shares previously allocated by the issuer,
+
+![1685643522293](image/DIGITALCURRENCY/1685643522293.png)
+
+then verifying the token balance,
+
+![1685643594089](image/DIGITALCURRENCY/1685643594089.png)
+
+## Placing a Buy Order
+
+As long as the trader/investor has been whitelisted and there are gold reserves, a trader can request a buy order of tokens from other traders that have a token balance.
+
+![1685644490147](image/DIGITALCURRENCY/1685644490147.png)
+
+## Placing a Sell Order
+
+The trader/investor must be whitelisted and have a token balance they have previously minted before they can place a sell order. Both the buy and sell order do not create or deplete tokens, they providing the trading mechanism between the investor wallets.
+
+![1685644565383](image/DIGITALCURRENCY/1685644565383.png)
