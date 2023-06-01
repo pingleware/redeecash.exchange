@@ -46,7 +46,7 @@ and checking the gold reserves,
 
 ![1685643167421](image/DIGITALCURRENCY/1685643167421.png)
 
-The issuer has hypothetically bought 10000 llots of XAUUSD from a FOREX broker before updating the contract gold reserves. If there were no gold reserves, the minting operation would fail.
+The issuer has hypothetically bought 10000 lots of XAUUSD from a FOREX broker before updating the contract gold reserves. If there were no gold reserves, the minting operation would fail.
 
 ## Minting New Tokens
 
