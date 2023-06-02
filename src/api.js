@@ -180,6 +180,30 @@ const orderSchema = new mongoose.Schema({
     },
 });
 
+// Consolidated Audit Trail schema
+const catSchema = new mongoose.Schema({
+  senderIMID: {
+    type: String,
+    required: true,
+  },
+  routedOrderID: {
+    type: String,
+    required: true,
+  },
+  symbol: {
+    type: String,
+    required: true,
+  },
+  eventTimestamp: {
+    type: String,
+    required: true,
+  },
+  session: {
+    type: String,
+    required: true,
+  },
+});
+
   
 // Create the token model
 let Token; // = mongoose.model('Token', tokenSchema);
@@ -195,6 +219,9 @@ let SupportTicket; // = mongoose.model('SupportTicket', supportTicketSchema);
 
 // Create the order model
 let Order; // = mongoose.model('Order', orderSchema);
+
+// Create the consoldate audit trail model
+let CAT;
 
 
 async function init() {
@@ -218,6 +245,9 @@ async function init() {
 
   // Create the order model
   Order = mongoose.model('Order', orderSchema);
+
+  // Create the CAT model
+  CAT = mongoose.model('CAT', catSchema);
 
 }
 
