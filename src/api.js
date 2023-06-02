@@ -95,6 +95,10 @@ const transferAgentSchema = mongoose.Schema({
 
 // Define the token schema
 const tokenSchema = new mongoose.Schema({
+    firmId: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+    },
     name: {
       type: String,
       required: true,
@@ -204,6 +208,124 @@ const catSchema = new mongoose.Schema({
   },
 });
 
+const firmSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  address1: {
+    type: String,
+    required: true,
+  },
+  address2: {
+    type: String,
+    required: false,
+  },
+  city: {
+    type: String,
+    required: true,
+  },
+  state: {
+    type: String,
+    required: true,
+  },
+  zipcode: {
+    type: String,
+    required: true,
+  },
+  country: {
+    type: String,
+    required: true,
+  },
+  contact: {
+    type: String,
+    required: true,
+  },
+  phone: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+  },
+  website: {
+    type: String,
+    required: true,
+  },
+  wallet: {
+    type: String,
+    required: true,
+  },
+});
+
+const brokerDealerSchema = new mongoose.Schema({
+  crd: {
+    type: String,
+    required: true,
+  },
+  sec: {
+    type: String,
+    required: true,
+  },
+  name: {
+    type: String,
+    required: true,
+  },
+  dba:{
+    type: String,
+    required: false,
+  },
+  address1: {
+    type: String,
+    required: true,
+  },
+  address2: {
+    type: String,
+    required: false,
+  },
+  city: {
+    type: String,
+    required: true,
+  },
+  state: {
+    type: String,
+    required: true,
+  },
+  zipcode: {
+    type: String,
+    required: true,
+  },
+  country: {
+    type: String,
+    required: true,
+  },
+  contact: {
+    type: String,
+    required: true,
+  },
+  phone: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: true,
+  },
+  website: {
+    type: String,
+    required: true,
+  },
+  wallet: {
+    type: String,
+    required: false,
+  },
+  active: {
+    type: Boolean,
+    require: true,
+    default: true,
+  }
+});
   
 // Create the token model
 let Token; // = mongoose.model('Token', tokenSchema);
@@ -223,6 +345,11 @@ let Order; // = mongoose.model('Order', orderSchema);
 // Create the consoldate audit trail model
 let CAT;
 
+// Create the firm model
+let Firm;
+
+// Create broker-dealer model
+let BrokerDealer;
 
 async function init() {
   // Connect to MongoDB
@@ -249,6 +376,44 @@ async function init() {
   // Create the CAT model
   CAT = mongoose.model('CAT', catSchema);
 
+  // Create the Firm model
+  Firm = mongoose.model('Firm', firmSchema);
+
+  // Create the broker-dealer model
+  BrokerDealer = mongoose.model('BrokerDealer', brokerDealerSchema);
+}
+
+async function brokerDealerRegistration(brokerDealerDetails) {
+  try {
+    const brokerDealer = new BrokerDealer(brokerDealerDetails);
+  
+    // Save the user to the database
+    const id = await brokerDealer.save();
+
+    return { success: true, message: 'Broker-Dealer registered successfully', id: id };
+  } catch(error) {
+    console.error(error);
+    return { success: false, message: 'Error registering user', error: error };
+  }
+}
+
+/**
+ * 
+ * @param {object} firmDetails 
+ * @returns 
+ */
+async function firmRegistration(firmDetails) {
+  try {
+    const firm = new Firm(firmDetails);
+  
+    // Save the user to the database
+    const id = await firm.save();
+
+    return { success: true, message: 'Firm registered successfully', id: id };
+  } catch(error) {
+    console.error(error);
+    return { success: false, message: 'Error registering user', error: error };
+  }
 }
 
 /**
@@ -863,6 +1028,8 @@ async function getOrderBook(tokenSymbol) {
 module.exports = {
     init,
     updateTokenContractAddress,
+    firmRegistration,
+    brokerDealerRegistration,
     registerUser,
     addUserToToken,
     registerTransferAgent,
