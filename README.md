@@ -10,7 +10,6 @@ Begins with filing the SEC Form 1. The initial, unfilled cover page has been inc
 
 ## SEC Self-Regulatory Organization Rulemaking
 
-
     See https://www.sec.gov/rules/sro.shtml
 
     NMS Regulation Final Rule - https://www.sec.gov/rules/final/34-51808.pdf
@@ -44,7 +43,7 @@ If there is a matter or conduct that appears to warrant an informal referral, st
 
 ## Consolidated Audit Trail
 
-Each NMS must submit a mapping of CAT Report fields to Exchange-related fields, see [Order and Quote RoutingField Mapping between CAT and Exchanges/Display-Only](https://www.catnmsplan.com/sites/default/files/2023-04/4.11.23_Order_Routing_Field_Mapping_between_CAT_and_Exchanges_v2.6.pdf) and [https://www.sec.gov/divisions/marketreg/rule613-info](https://www.sec.gov/divisions/marketreg/rule613-info) 
+Each NMS must submit a mapping of CAT Report fields to Exchange-related fields, see [Order and Quote RoutingField Mapping between CAT and Exchanges/Display-Only](https://www.catnmsplan.com/sites/default/files/2023-04/4.11.23_Order_Routing_Field_Mapping_between_CAT_and_Exchanges_v2.6.pdf) and [https://www.sec.gov/divisions/marketreg/rule613-info](https://www.sec.gov/divisions/marketreg/rule613-info)
 
 | CAT Report Field | RedeeCash Exchange-related Field        |
 | ---------------- | --------------------------------------- |
@@ -77,6 +76,10 @@ An initial overview of the RedeeCash Exchange registration,
 
 [RedeeCash Exchange Overview](files/RedeeCash_Exchange.pdf)
 
-[Using Blockchain for Private Equity under Rule 506b](files/blockchain_rule506b.pdf) Assigned staff should consult initially with their direct supervisors, as well as OMI and/or
+[Using Blockchain for Private Equity under Rule 506b](files/blockchain_rule506b.pdf) 
+
+[Digital Asset Market Structure Discussion Draft](files/HHRG-118-AG00-20230606-SD002.pdf)
+
+Assigned staff should consult initially with their direct supervisors, as well as OMI and/or
 
   the Division of Trading and Markets, as appropriate.
