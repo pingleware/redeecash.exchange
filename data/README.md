@@ -17,7 +17,9 @@ The data format will be XML
 
 ## Audit Requirements
 
-Since these filings are voluntary for non-public companies, an audit by an independent CPA is voluntary and not required. A managerial audit is encouraged using an algorithmic auditing tool such as https://github.com/pingleware/bestbooks-auditor
+Since these filings are voluntary for non-public companies, an audit by an independent CPA is voluntary and not required. A managerial audit is encouraged using an algorithmic auditing tool such as https://github.com/pingleware/bestbooks-auditor.
+
+A ConsolidatedAuditTrail contract is created and updated during transfers, miniting and burning of tokens. Audit trail is retreived by symbol.
 
 ## Company Reporting
 
@@ -83,12 +85,13 @@ The independent transfer agent, will use approveTransaction and transferFrom, wh
 
 The following offering pools, which is a contract that can create unllimited offerings of a specific type, are included with their contract address,
 
-1. OfferingRegAT1Pool at 0x01506e655F44d4C023fA5Fc04DDDa4b3053dEF8d
-2. Offering506bPool at 0x696AaA1720a94A24E08CE8E2e7a87957b8038DbA
-3. Offering506cPool at 0x7bC96E54e8dc6e1cd1Df083F6AF51EE6064a75be
-4. OfferingS1Pool at 0x19451463d200B426E95329E366B9a241681C5828
-5. Spot Currency Order Book at 0x599aD94A656574a7DAEE33C104501a447dF6709f [Token: RCDCRC-5C  Address: **0x50fF7fa753C23c433bF37B65772d991e576B8129****]**
-6. Oracle at 0x7e6EE5709CECec29d5c8Aa6F40ABDbdc9e1BA347
+1. OfferingRegAT1Pool at **0x185a178FE8F5BDCf49a9e045327f662D48599eD9**
+2. Offering506bPool at **0xF383318a2a33010a5DCFEa8e2C919A2cdAA6441F**
+3. Offering506cPool at **0xE9d103e4231c3A0576Ff8E3Fa4cc77F05b7917db**
+4. OfferingS1Pool at **0x6DFDD215e3d4330c878e6F4C189C9F3dfD6A6F24**
+5. Spot Currency Order Book at **0x599aD94A656574a7DAEE33C104501a447dF6709f** [Token: RCDCRC-5C  Address: **0x50fF7fa753C23c433bF37B65772d991e576B8129****]**
+6. Oracle at **0x7e6EE5709CECec29d5c8Aa6F40ABDbdc9e1BA347**
+7. ConsolidateAuditTrail at **0xe52b24B286927Eb2C9d0a61adE178067299375Dc**
 
 ### Connectine with REMIX
 
