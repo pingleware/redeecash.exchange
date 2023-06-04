@@ -3,112 +3,11 @@ const Web3 = require('web3');
 const web3 = new Web3('http://127.0.0.1:8545');
 
 // Set the contract address and ABI
-const oracleContractAddress = '0x50fF7fa753C23c433bF37B65772d991e576B8129';
-const oracleContractABI = [
-        {
-            "anonymous": false,
-            "inputs": [
-                {
-                    "indexed": true,
-                    "internalType": "uint256",
-                    "name": "id",
-                    "type": "uint256"
-                },
-                {
-                    "indexed": false,
-                    "internalType": "string",
-                    "name": "data",
-                    "type": "string"
-                }
-            ],
-            "name": "DataProvided",
-            "type": "event"
-        },
-        {
-            "anonymous": false,
-            "inputs": [
-                {
-                    "indexed": true,
-                    "internalType": "uint256",
-                    "name": "id",
-                    "type": "uint256"
-                },
-                {
-                    "indexed": true,
-                    "internalType": "address",
-                    "name": "requester",
-                    "type": "address"
-                },
-                {
-                    "indexed": false,
-                    "internalType": "string",
-                    "name": "apiEndpoint",
-                    "type": "string"
-                }
-            ],
-            "name": "DataRequested",
-            "type": "event"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "_requestId",
-                    "type": "uint256"
-                },
-                {
-                    "internalType": "string",
-                    "name": "_data",
-                    "type": "string"
-                }
-            ],
-            "name": "provideData",
-            "outputs": [],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "string",
-                    "name": "_apiEndpoint",
-                    "type": "string"
-                }
-            ],
-            "name": "requestData",
-            "outputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "",
-                    "type": "uint256"
-                }
-            ],
-            "stateMutability": "nonpayable",
-            "type": "function"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "uint256",
-                    "name": "_requestId",
-                    "type": "uint256"
-                }
-            ],
-            "name": "getData",
-            "outputs": [
-                {
-                    "internalType": "string",
-                    "name": "",
-                    "type": "string"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        }
-    ];
+const oracleContractAddress = '0xd9E32eA5ea7841Bc0A906F7e2B5a93D0124f8549';
+const oracleABI = request('./abi'); 
 
 // Create a contract instance
-const oracleContract = new web3.eth.Contract(oracleContractABI, oracleContractAddress);
+const oracleContract = new web3.eth.Contract(JSON.parse(oracleABI), oracleContractAddress);
 
 // Maintain a list of provideData requests
 const provideDataRequests = {};
@@ -123,7 +22,7 @@ async function provideData(requestId, priceData) {
     // Call the provideData function of the Oracle contract
     const transaction = await oracleContract.methods.provideData(requestId, priceData).send({ from: requester });
 
-    console.log('Price data provided successfully for request ID:', requestId);
+    console.log('Price data provided successfully for request ID:', requestId, ' with price data of ', priceData);
 
     // Remove the request from the list once it is completed
     delete provideDataRequests[requestId];
@@ -131,6 +30,56 @@ async function provideData(requestId, priceData) {
   } catch (error) {
     console.error('Error providing price data:', error);
   }
+}
+
+async function getRequestId(callback) {
+    try {
+        const accounts = await web3.eth.getAccounts();
+        const requester = accounts[0]; // Use the first account as the requester
+    
+        // Call the provideData function of the Oracle contract
+        oracleContract.methods.getRequestId().call(
+            { 
+                from: requester 
+            }
+        ).then(function(requestId) {
+            console.log(requestId)
+            callback(requestId);
+        });    
+    } catch(error) {
+        console.error('Error providing price data:', error);
+    }
+}
+
+async function getData(requestId) {
+    try {
+        const accounts = await web3.eth.getAccounts();
+        const requester = accounts[0]; // Use the first account as the requester
+    
+        // Call the provideData function of the Oracle contract
+        const data = await oracleContract.methods.getData(requestId).call({ from: requester });
+        return data;
+    
+    } catch(error) {
+        console.error('Error providing price data:', error);
+    }
+
+}
+
+async function requestData(endpoint,callback) {
+    try {
+        const accounts = await web3.eth.getAccounts();
+        const requester = accounts[0]; // Use the first account as the requester
+    
+        // Call the provideData function of the Oracle contract
+        await oracleContract.methods.requestData(endpoint).call({ from: requester })
+        .then((result) => {
+            callback(result);
+        });
+    
+    } catch(error) {
+        console.error('Error providing price data:', error);
+    }
 }
 
 // Function to handle new provideData requests
@@ -143,10 +92,9 @@ function handleProvideDataRequest(requestId, priceData) {
   return provideData(requestId, priceData);
 }
 
-module.exports = handleProvideDataRequest;
-// Example usage
-//const requestId = '<request_id>';
-//const priceData = '<price_data>';
-
-// Handle the provideData request and store it in the list
-//handleProvideDataRequest(requestId, priceData);
+module.exports = {
+    handleProvideDataRequest,
+    getRequestId,
+    getData,
+    requestData,
+}

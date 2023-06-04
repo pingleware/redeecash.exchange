@@ -5,6 +5,8 @@ const {
     init,
     updateTokenContractAddress,
     registerUser,
+    firmRegistration,
+    brokerDealerRegistration,
     addUserToToken,
     registerTransferAgent,
     addTransferAgentToToken,
@@ -27,11 +29,24 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.post('/register', (req, res) => {
+/**
+ * Registration
+ */
+app.post('/register/user', (req, res) => {
   const { name, email, password, wallet, access} = req.body;
   const status = registerUser(name, email, password, wallet, access);
   console.error(status);
   res.json(status);
+})
+app.post('/register/firm', (req, res) => {
+  const { firmDetails } = req.body;
+  const result = firmRegistration(firmDetails);
+  res.json(result);
+})
+app.post('/register/brokerDealer', (req, res) => {
+  const { brokerDealerDetails } = req.body;
+  const result = brokerDealerRegistration(brokerDealerDetails);
+  res.json(result);
 })
 app.post('/register/transferAgent', (req, res) => {
   const {pool,token,name,email,password,wallet} = req.body;
@@ -39,6 +54,9 @@ app.post('/register/transferAgent', (req, res) => {
   console.log(status);
   res.json(status);
 })
+/**
+ * Token
+ */
 app.post('/token/user', (req, res) => {
   const { token, user } = req.body;
   const status = addUserToToken(token,user);
@@ -57,10 +75,71 @@ app.post('/token/update/address', (req, res) => {
   console.log(status);
   res.json(status);
 })
+/**
+ * Banking
+ */
+app.post('/depositTokens', (req, res) => {
+  const { userId, amount, token } = req.body;
+  const status = depositTokens(userId, amount, token)
+  res.json(status);
+});
+app.post('/withdrawTokens', (req, res) => {
+  const { userId, amount, token } = req.body;
+  const status = withdrawTokens(userId, amount, token)
+  res.json(status);
+});
+/**
+ * AML and KyC
+ */
 app.post('/performKYCVerification', (req, res) => {
   const { userId, kycData } = req.body;
   const status = performKYCVerification(userId, kycData);
   res.json(status);
+});
+app.post('/performSecurityChecks', (req, res) => {
+  const { userId, transaction } = req.body;
+  const status = performSecurityChecks(userId, transaction)
+  res.json(status);
+});
+/**
+ * Order
+ */
+app.get('/orderbook', (req, res) => {
+  const { symbol } = req.query;
+  const _orderbook = getOrderBook(symbol);
+  res.json({_orderbook});
+})
+
+app.post('/placeOrder', (req, res) => {
+  const { userId, orderDetails } = req.body;
+  const status = placeOrder(userId, JSON.parse(orderDetails));
+  console.error(status);
+  res.json(status);
+});
+/**
+ * FIX Protocol
+ */
+app.post('/processFIXMessage', (req, res) => {
+  const { message } = req.body;
+  const status = processFIXMessage(message)
+  res.json(status);
+});
+/**
+ * Support
+ */
+app.post('/handleCustomerSupportTicket', (req, res) => {
+  const { ticketDetails } = req.body;
+  const status = handleCustomerSupportTicket(ticketDetails)
+  res.json(status);
+});
+/**
+ * Symbol
+ */
+app.post('/symbol/new', (req, res) => {
+  const {assetType,regulation,company} = req.body;
+
+  const symbol = generateSymbol(assetType, regulation, company);
+  res.json({symbol});
 });
 app.post('/applyForTokenListing', (req, res) => {
   const { tokenDetails } = req.body;
@@ -74,73 +153,7 @@ app.post('/createTokenListing', (req, res) => {
   console.log(status);
   res.json(status);
 })
-app.post('/placeOrder', (req, res) => {
-  const { userId, orderDetails } = req.body;
-  const status = placeOrder(userId, JSON.parse(orderDetails));
-  console.error(status);
-  res.json(status);
-});
-app.post('/depositTokens', (req, res) => {
-  const { userId, amount, token } = req.body;
-  const status = depositTokens(userId, amount, token)
-  res.json(status);
-});
-app.post('/withdrawTokens', (req, res) => {
-  const { userId, amount, token } = req.body;
-  const status = withdrawTokens(userId, amount, token)
-  res.json(status);
-});
-app.post('/processFIXMessage', (req, res) => {
-  const { message } = req.body;
-  const status = processFIXMessage(message)
-  res.json(status);
-});
-app.post('/performSecurityChecks', (req, res) => {
-  const { userId, transaction } = req.body;
-  const status = performSecurityChecks(userId, transaction)
-  res.json(status);
-});
-app.get('/runTests', (req, res) => {
-  const status = runTests()
-  res.json(status);
-});
-app.post('/handleCustomerSupportTicket', (req, res) => {
-  const { ticketDetails } = req.body;
-  const status = handleCustomerSupportTicket(ticketDetails)
-  res.json(status);
-});
-app.get('/getTokenQuote', (req, res) => {
-  const { tokenSymbol } = req.body;
-  const status = getTokenQuote(tokenSymbol)
-  res.json(status);
-});
-app.get('/orderbook', (req, res) => {
-  const { symbol } = req.query;
-  const _orderbook = getOrderBook(symbol);
-  res.json({_orderbook});
-})
-app.post('/symbol/new', (req, res) => {
-  const {assetType,regulation,company} = req.body;
 
-  const symbol = generateSymbol(assetType, regulation, company);
-  res.json({symbol});
-})
-app.get('/quote/update', async (req, res) =>  {
-  const fetchUrl = require("fetch").fetchUrl;
-  const handleProvideDataRequest = require('./oracleRequest');
-
-
-  fetchUrl('https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/xau/usd.json', async function(error, meta, body){
-      const quote = JSON.parse(body.toString());
-      const xauusd = quote.usd;
-      console.log(xauusd);
-
-      const transaction = await handleProvideDataRequest(1,xauusd);
-      res.json(transaction);  
-  });
-
-  // https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/xau/usd.json
-})
 
 function fullNameToAbbreviation(fullName) {
   // Split the full name into individual words
@@ -241,9 +254,51 @@ function generateSymbol(assetType, regulation, companyName="") {
   return symbol;
 }
 
+/**
+ * Quoting
+ */
+app.get('/getTokenQuote', (req, res) => {
+  const { tokenSymbol } = req.body;
+  const status = getTokenQuote(tokenSymbol)
+  res.json(status);
+});
 
+app.get('/quote/update', async (req, res) =>  {
+  const fetchUrl = require("fetch").fetchUrl;
+  const {
+    handleProvideDataRequest,
+    getRequestId,
+    getData,
+    requestData,
+  } = require('./oracleRequest');
+    
+  fetchUrl('https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/xau/usd.json', async function(error, meta, body){
+    const quote = JSON.parse(body.toString());
+    const xauusd = quote.usd;
+    console.log(xauusd);
 
-const port = 3001;
+    await requestData("https://cdn.jsdelivr.net/gh/fawazahmed0/currency-api@1/latest/currencies/xau/usd.json", async function(result){
+      let requestId = result;
+      console.log(requestId);
+    
+      const transaction = await handleProvideDataRequest(requestId,xauusd);
+      res.json(transaction);
+    });
+  });
+})
+
+app.post('/quote/update', async (req,res) => {
+  const { endpoint } = req.body;
+  const { requestData } = require('./oracleRequest');
+  await requestData(endpoint, function(transaction){
+    res.json(transaction);
+  });
+})
+
+/**
+ * Starting Server
+ */
+const port = 3002;
 
 app.listen(port, () => {
   init();
