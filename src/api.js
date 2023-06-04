@@ -114,6 +114,26 @@ async function firmRegistration(firmDetails) {
   }
 }
 
+async function exportCAT2JSON() {
+  try {
+    CAT.find().lean().exec((err, data) => {
+      if (err) {
+        console.error('Error retrieving collection data:', err);
+        return;
+      }
+    
+      // Convert the data to JSON
+      const jsonData = JSON.stringify(data);
+    
+      // Print or process the JSON data
+      console.log(jsonData);
+      return { success: true, message: 'successfully export to json', json: jsonData };
+    });
+  } catch(error) {
+    return { success: false, message: 'Error exporting to json', error: error };
+  }
+}
+
 /**
  * User Registration
  * 1. Code to handle user registration
@@ -743,5 +763,6 @@ module.exports = {
     runTests,
     handleCustomerSupportTicket,
     getTokenQuote,
-    getOrderBook
+    getOrderBook,
+    exportCAT2JSON
 }
