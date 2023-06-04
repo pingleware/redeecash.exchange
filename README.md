@@ -69,6 +69,15 @@ The wallet address is the basis of all transactions on a blockchain network, to 
 
 [Order Approving Amendment to the National Market System Plan Governing the Consolidated Audit Trail](https://www.sec.gov/rules/sro/nms/2020/34-89397.pdf)
 
+[Rule 613 (Consolidated Audit Trail)](https://www.sec.gov/divisions/marketreg/rule613-info)
+
+[Rule 613 of Regulation NMS (17 CFR part 242)](https://www.federalregister.gov/documents/2023/05/19/2023-10781/extension-rule-613-of-regulation-nms#:~:text=Rule%20613%20of%20Regulation%20NMS%20(17%20CFR%20part%20242)%20required,(“CAT”)%20and%20Central)
+
+"Rule 613 of Regulation NMS ([17 CFR part 242](https://www.ecfr.gov/current/title-17/part-242)) required national securities exchanges and national securities associations (“Participants”) to jointly submit to the Commission a national market system (“NMS”) plan to govern the creation, implementation, and maintenance of a consolidated audit trail (“CAT”) and Central Repository for the collection of information for NMS securities."
+
+[PART 242—REGULATIONS M, SHO, ATS, AC, NMS, AND SBSR AND CUSTOMER MARGIN REQUIREMENTS FOR SECURITY FUTURES](https://www.ecfr.gov/current/title-17/chapter-II/part-242)
+
+[Scaling to Build the Consolidated Audit Trail: A Financial Services Application of Google Cloud Bigtable](https://cloud.google.com/bigtable/pdf/FISConsolidatedAuditTrail.pdf)
 
 ## About RedeeCash Exchange
 
