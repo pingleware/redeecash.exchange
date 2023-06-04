@@ -45,13 +45,13 @@ If there is a matter or conduct that appears to warrant an informal referral, st
 
 Each NMS must submit a mapping of CAT Report fields to Exchange-related fields, see [Order and Quote RoutingField Mapping between CAT and Exchanges/Display-Only](https://www.catnmsplan.com/sites/default/files/2023-04/4.11.23_Order_Routing_Field_Mapping_between_CAT_and_Exchanges_v2.6.pdf) and [https://www.sec.gov/divisions/marketreg/rule613-info](https://www.sec.gov/divisions/marketreg/rule613-info)
 
-| CAT Report Field | RedeeCash Exchange-related Field        |
-| ---------------- | --------------------------------------- |
-| senderIMID       | wallet address                          |
-| routedOrderID    | the transaction hash                    |
-| symbol           | the registered symbol, e.g. RCDCRC-5C  |
-| eventTimestamp   | ISO zulu form (ISO 8601)                |
-| session          | Will contain the blockchain transaction |
+| CAT Report Field | RedeeCash Exchange-related Field                                                                                                                                              |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| senderIMID       | wallet address                                                                                                                                                                |
+| routedOrderID    | transaction object = {<br />       sender: `<wallet address>,`<br />       recipient: `<wallet address>,`<br />       token: `<number of tokens>`<br />}    |
+| symbol           | the registered symbol, e.g. RCDCRC-5C                                                                                                                                        |
+| eventTimestamp   | ISO zulu form (ISO 8601)                                                                                                                                                      |
+| session          | transaction object = {<br />       sender: `<wallet address>,` <br />       recipient: `<wallet address>,`<br />       tokens: `<number of tokens>`<br />} |
 
 the above is subject to change until approved.
 
@@ -59,16 +59,13 @@ An issue that will need to be resolve with the NMS Plan submission, is the Prohi
 
     A. Prohibition on Use of Account Numbers
 
-    The Participants propose to amend the definition of Firm Designated ID to prohibit the
-use of account numbers as Firm Designated IDs for accounts that are not proprietary accounts.
-After discussions with the industry, the Participants have concluded that each Industry Member
-must make its own risk determination as to whether it believes it is necessary to mask the actual
-account number for any proprietary account of the Industry Member when reporting the Firm
-Designated ID to CAT.
+    The Participants propose to amend the definition of Firm Designated ID to prohibit the use of account numbers as Firm Designated IDs for accounts that are not proprietary accounts. After discussions with the industry, the Participants have concluded that each Industry Member must make its own risk determination as to whether it believes it is necessary to mask the actual account number for any proprietary account of the Industry Member when reporting the Firm Designated ID to CAT.
 
 **Resolution using a single trading wallet**:
 
 The senderIMID would then be the trading wallet, and an offchain record maintained to correlate the transaction and the investor wallet/account, when the CAT is NOT confidential. For confidential CAT reporting the senderIMID would be the investor wallet. However, unless a waiver can be obtained permitting the use of wallet addresses, then the NMS must be a custodial-based system and trading is restricted to registered broker-dealers whp maintain custody of the investor tokens. See [Custody of Funds or Securities of Clients by Investment Advisers](https://www.sec.gov/rules/final/ia-2176.htm).
+
+The wallet address is the basis of all transactions on a blockchain network, to mask the wallet is not possible. The wallet address does not disclose or contain any personal identity information (PII), additionally, the nature of the wallet has security measures to prevent unauthorized access unless the wallet holder has been compromise with an unscruplous entity obtaining the owner wallet seed or private keeys. The exchange nor the blockchain, does not maintain a record of private wallets keys or seeds. Therefore, this exchange will continue to accept wallets from qualified traders/investors and will not mask the wallet addresses.
 
 ## About RedeeCash Exchange
 
@@ -76,10 +73,8 @@ An initial overview of the RedeeCash Exchange registration,
 
 [RedeeCash Exchange Overview](files/RedeeCash_Exchange.pdf)
 
-[Using Blockchain for Private Equity under Rule 506b](files/blockchain_rule506b.pdf) 
+[Using Blockchain for Private Equity under Rule 506b](files/blockchain_rule506b.pdf)
 
 [Digital Asset Market Structure Discussion Draft](files/HHRG-118-AG00-20230606-SD002.pdf)
 
-Assigned staff should consult initially with their direct supervisors, as well as OMI and/or
-
-  the Division of Trading and Markets, as appropriate.
+Assigned staff should consult initially with their direct supervisors, as well as OMI and/or the Division of Trading and Markets, as appropriate.
