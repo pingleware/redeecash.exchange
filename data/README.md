@@ -91,7 +91,7 @@ The following offering pools, which is a contract that can create unllimited off
 4. OfferingS1Pool at **0xfcD6B8Ee57d52f5Fc85cF1Fac66E33bA0E87B637**
 5. Spot Currency Order Book at **0x599aD94A656574a7DAEE33C104501a447dF6709f** [Token: RCDCRC-5C  Address: **0x50fF7fa753C23c433bF37B65772d991e576B8129****]**
 6. Oracle at **0x7e6EE5709CECec29d5c8Aa6F40ABDbdc9e1BA347**
-7. ConsolidateAuditTrail at **0x0378124Da4FCb98F5ED7F142249D9E0F67125E71**
+7. ConsolidateAuditTrail at **0x9605BDF98F75E49FC6a87aefCB39195e388A68d3**
 
 ### Connectine with REMIX
 

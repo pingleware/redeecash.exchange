@@ -37,9 +37,10 @@ contract ConsolidatedAuditTrail is IConsolidatedAuditTrail {
     // Function to add an audit trail entry
     function addAuditTrail(address _owner, string calldata symbol,Transaction memory transaction, uint256 timestamp) external {
         require(_owner == owner,"not authorized");
-        AuditTrail memory trail = AuditTrail(msg.sender, transaction, symbol, timestamp);
+        bytes32 hash = keccak256(abi.encodePacked(msg.sender, transaction.receiver, transaction.tokens, symbol, timestamp));
+        AuditTrail memory trail = AuditTrail(msg.sender, hash, symbol, timestamp, transaction);
         auditTrails.push(trail);
-        emit AuditTrailAdded(msg.sender, transaction, symbol, timestamp);
+        emit AuditTrailAdded(msg.sender, hash, symbol, timestamp, transaction);
     }
 
     function getAuditTrailBySymbol(string memory _symbol) external view returns (AuditTrail[] memory) {
@@ -47,7 +48,7 @@ contract ConsolidatedAuditTrail is IConsolidatedAuditTrail {
         uint256 index = 0;
         for (uint256 i=0; i < auditTrails.length; i++) {
             if (compareStrings(auditTrails[i].symbol,_symbol)) {
-                AuditTrail memory _audit = AuditTrail(auditTrails[i].senderIMID,auditTrails[i].routedOrderID,auditTrails[i].symbol,auditTrails[i].eventTimestamp);
+                AuditTrail memory _audit = AuditTrail(auditTrails[i].senderIMID,auditTrails[i].routedOrderID,auditTrails[i].symbol,auditTrails[i].eventTimestamp,auditTrails[i].session);
                 audit[index++] = _audit;
             }
         }
