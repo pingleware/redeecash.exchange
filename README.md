@@ -45,13 +45,13 @@ If there is a matter or conduct that appears to warrant an informal referral, st
 
 Each NMS must submit a mapping of CAT Report fields to Exchange-related fields, see [Order and Quote RoutingField Mapping between CAT and Exchanges/Display-Only](https://www.catnmsplan.com/sites/default/files/2023-04/4.11.23_Order_Routing_Field_Mapping_between_CAT_and_Exchanges_v2.6.pdf) and [https://www.sec.gov/divisions/marketreg/rule613-info](https://www.sec.gov/divisions/marketreg/rule613-info)
 
-| CAT Report Field | RedeeCash Exchange-related Field                                                                                                                                              |
-| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| senderIMID       | wallet address                                                                                                                                                                |
-| routedOrderID    | transaction object = {<br />       sender: `<wallet address>,`<br />       recipient: `<wallet address>,`<br />       token: `<number of tokens>`<br />}    |
-| symbol           | the registered symbol, e.g. RCDCRC-5C                                                                                                                                        |
-| eventTimestamp   | ISO zulu form (ISO 8601)                                                                                                                                                      |
-| session          | transaction object = {<br />       sender: `<wallet address>,` <br />       recipient: `<wallet address>,`<br />       tokens: `<number of tokens>`<br />} |
+| CAT Report Field | RedeeCash Exchange-related Field                                                                                                                                                                                         |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| senderIMID       | wallet address                                                                                                                                                                                                           |
+| routedOrderID    | hash of the transaction session object = {<br />       sender: `<wallet address>,`<br />       recipient: `<wallet address>,`<br />       token: `<number of tokens>`<br />} with symbol and timestamp |
+| symbol           | the registered symbol, e.g. RCDCRC-5C                                                                                                                                                                                   |
+| eventTimestamp   | ISO zulu form (ISO 8601)                                                                                                                                                                                                 |
+| session          | transaction object = {<br />       sender: `<wallet address>,` <br />       recipient: `<wallet address>,`<br />       tokens: `<number of tokens>` <br />}                                          |
 
 the above is subject to change until approved.
 
