@@ -22,7 +22,9 @@ const {
   orderSchema,
   catSchema,
   firmSchema,
-  brokerDealerSchema
+  brokerDealerSchema,
+  botProviderSchema,
+  botSchema
 } = require('./schema');
   
 // Create the token model
@@ -48,6 +50,10 @@ let Firm;
 
 // Create broker-dealer model
 let BrokerDealer;
+
+let BotProvider;
+
+let Bot;
 
 async function init() {
   // Connect to MongoDB
@@ -79,6 +85,10 @@ async function init() {
 
   // Create the broker-dealer model
   BrokerDealer = mongoose.model('BrokerDealer', brokerDealerSchema);
+
+  BotProvider = mongoose.model('BotProvider', botProviderSchema);
+
+  Bot = mongoose.model('Bot', botSchema);
 }
 
 async function brokerDealerRegistration(brokerDealerDetails) {

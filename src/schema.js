@@ -6,6 +6,8 @@ const orderSchema = require('./schema-order');
 const catSchema = require('./schema-cat');
 const firmSchema = require('./schema-firm');
 const brokerDealerSchema = require('./schema-brokerDealer');
+const botProviderSchema = require('./schema-botProviderSchema');
+const botSchema = require('./schema-botSchema');
 
 
 module.exports = {
@@ -16,5 +18,7 @@ module.exports = {
     orderSchema,
     catSchema,
     firmSchema,
-    brokerDealerSchema  
+    brokerDealerSchema,
+    botProviderSchema,
+    botSchema
 }

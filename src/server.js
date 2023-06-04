@@ -298,7 +298,7 @@ app.post('/quote/update', async (req,res) => {
 /**
  * Starting Server
  */
-const port = 3002;
+const port = 3000;
 
 app.listen(port, () => {
   init();
