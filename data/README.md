@@ -8,10 +8,12 @@ The directory structure top level will be the SEC assigned filer CIK followed by
 
 Since the SEC EDGAR does not offer voluntary reporting of annual and quarterly reports for a Regulation D or A Tier 1, the following new filing report types will be created in this repository,
 
-* Form D-Q as the voluntary quarterly reporting for a Regulation D exempt offering
+* Form D-Q ([Form Ouarterly](../files/form-quarterly.pdf)) as the voluntary quarterly reporting for a Regulation D exempt offering
 * Form D-K as the voluntary annual reporting for a Regulation D exempt offering
-* Form A1-Q as the voluntary quarterly reporting for a Regulation A Tier 1 offering
+* Form A1-Q ([Form Ouarterly](../files/form-quarterly.pdf)) as the voluntary quarterly reporting for a Regulation A Tier 1 offering
 * Form A1-K as the voluntary annual reporting for a Regulation A Tier 1 offering
+* Existing [Form 8-K](../files/form8-k.pdf) will be used for all 8-K disclosures
+* Existing [Form ATS-N](../files/formats-n.pdf) for SEC registration of an Alternative Trading System
 
 The data format will be XML
 
