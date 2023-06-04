@@ -16,7 +16,7 @@ Begins with filing the SEC Form 1. The initial, unfilled cover page has been inc
 
     Consolidate Auditing Trail - https://www.catnmsplan.com/about-cat
 
-    Enforcement Manual - https://www.sec.gov/divisions/enforce/enforcementmanual.pdf
+    Enforcement Manual - https://www.sec.gov/divisions/enforce/enforcementmanual.pdf (and enforcement ations at https://www.sec.gov/page/litigation)
 
 **Under 5.6.2 Informal Referrals to Self-Regulatory Organizations**,
 
@@ -66,6 +66,9 @@ An issue that will need to be resolve with the NMS Plan submission, is the Prohi
 The senderIMID would then be the trading wallet, and an offchain record maintained to correlate the transaction and the investor wallet/account, when the CAT is NOT confidential. For confidential CAT reporting the senderIMID would be the investor wallet. However, unless a waiver can be obtained permitting the use of wallet addresses, then the NMS must be a custodial-based system and trading is restricted to registered broker-dealers whp maintain custody of the investor tokens. See [Custody of Funds or Securities of Clients by Investment Advisers](https://www.sec.gov/rules/final/ia-2176.htm).
 
 The wallet address is the basis of all transactions on a blockchain network, to mask the wallet is not possible. The wallet address does not disclose or contain any personal identity information (PII), additionally, the nature of the wallet has security measures to prevent unauthorized access unless the wallet holder has been compromise with an unscruplous entity obtaining the owner wallet seed or private keeys. The exchange nor the blockchain, does not maintain a record of private wallets keys or seeds. Therefore, this exchange will continue to accept wallets from qualified traders/investors and will not mask the wallet addresses.
+
+[Order Approving Amendment to the National Market System Plan Governing the Consolidated Audit Trail](https://www.sec.gov/rules/sro/nms/2020/34-89397.pdf)
+
 
 ## About RedeeCash Exchange
 
