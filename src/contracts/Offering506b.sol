@@ -45,7 +45,7 @@ contract Offering506b is IOffering506b {
         emit Transfer(msg.sender, to, tokens);
         // save CAT
         IConsolidatedAuditTrail.Transaction memory transaction = IConsolidatedAuditTrail.Transaction(msg.sender,to,tokens);
-        catContract.addAuditTrail(symbol,transaction,block.timestamp);
+        catContract.addAuditTrail(owner,symbol,transaction,block.timestamp);
         return true;
     }
     
@@ -69,7 +69,7 @@ contract Offering506b is IOffering506b {
         emit Transfer(from, to, tokens);
         // save CAT
         IConsolidatedAuditTrail.Transaction memory transaction = IConsolidatedAuditTrail.Transaction(from,to,tokens);
-        catContract.addAuditTrail(symbol,transaction,block.timestamp);
+        catContract.addAuditTrail(owner,symbol,transaction,block.timestamp);
         return true;
     }
 
@@ -85,7 +85,7 @@ contract Offering506b is IOffering506b {
         emit Transfer(address(0), msg.sender, _amount);
         // save CAT
         IConsolidatedAuditTrail.Transaction memory transaction = IConsolidatedAuditTrail.Transaction(address(0),msg.sender,_amount);
-        catContract.addAuditTrail(symbol,transaction,block.timestamp);
+        catContract.addAuditTrail(owner,symbol,transaction,block.timestamp);
         return true;
     }
     
@@ -102,7 +102,7 @@ contract Offering506b is IOffering506b {
         emit Transfer(msg.sender, address(0), _amount);
         // save CAT
         IConsolidatedAuditTrail.Transaction memory transaction = IConsolidatedAuditTrail.Transaction(msg.sender,address(0),_amount);
-        catContract.addAuditTrail(symbol,transaction,block.timestamp);
+        catContract.addAuditTrail(owner,symbol,transaction,block.timestamp);
         return true;
     }
 

@@ -85,10 +85,10 @@ The independent transfer agent, will use approveTransaction and transferFrom, wh
 
 The following offering pools, which is a contract that can create unllimited offerings of a specific type, are included with their contract address,
 
-1. OfferingRegAT1Pool at **0x185a178FE8F5BDCf49a9e045327f662D48599eD9**
-2. Offering506bPool at **0xF383318a2a33010a5DCFEa8e2C919A2cdAA6441F**
-3. Offering506cPool at **0xE9d103e4231c3A0576Ff8E3Fa4cc77F05b7917db**
-4. OfferingS1Pool at **0x6DFDD215e3d4330c878e6F4C189C9F3dfD6A6F24**
+1. OfferingRegAT1Pool at **0xcc9710a3FA4Db366276d550F3ddDDC1ABb32B036**
+2. Offering506bPool at **0x9A9f7a3f554A4D4eb68AbD74FCcB8b168e7299dD**
+3. Offering506cPool at **0x23fa49C1De609B9C4797E1E0FcfE9Ab2Da6e65b6**
+4. OfferingS1Pool at **0xfcD6B8Ee57d52f5Fc85cF1Fac66E33bA0E87B637**
 5. Spot Currency Order Book at **0x599aD94A656574a7DAEE33C104501a447dF6709f** [Token: RCDCRC-5C  Address: **0x50fF7fa753C23c433bF37B65772d991e576B8129****]**
 6. Oracle at **0x7e6EE5709CECec29d5c8Aa6F40ABDbdc9e1BA347**
 7. ConsolidateAuditTrail at **0x0378124Da4FCb98F5ED7F142249D9E0F67125E71**

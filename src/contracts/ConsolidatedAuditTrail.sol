@@ -35,7 +35,8 @@ contract ConsolidatedAuditTrail is IConsolidatedAuditTrail {
     }
 
     // Function to add an audit trail entry
-    function addAuditTrail(string calldata symbol,Transaction memory transaction, uint256 timestamp) isOwner external {
+    function addAuditTrail(address _owner, string calldata symbol,Transaction memory transaction, uint256 timestamp) external {
+        require(_owner == owner,"not authorized");
         AuditTrail memory trail = AuditTrail(msg.sender, transaction, symbol, timestamp);
         auditTrails.push(trail);
         emit AuditTrailAdded(msg.sender, transaction, symbol, timestamp);
