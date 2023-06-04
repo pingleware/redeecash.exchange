@@ -15,6 +15,8 @@ Since the SEC EDGAR does not offer voluntary reporting of annual and quarterly r
 
 The data format will be XML
 
+The D-Q and A1-Q hs been combined into a [form quarterly](../files/form-quarterly.pdf).
+
 ## Audit Requirements
 
 Since these filings are voluntary for non-public companies, an audit by an independent CPA is voluntary and not required. A managerial audit is encouraged using an algorithmic auditing tool such as https://github.com/pingleware/bestbooks-auditor.
