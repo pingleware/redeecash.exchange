@@ -33,12 +33,12 @@ contract OfferingS1Pool {
     }
 
 
-    function createToken(address issuer, string memory name, string memory symbol, uint tokens, uint price) public isOwner {
+    function createToken(address issuer, string memory name, string memory symbol, uint tokens, uint price, address catContractAddress) public isOwner {
         require(tokenContracts[symbol] == address(0), "Token already exists");
 
         if (price > 0) {}
 
-        address newToken = address(new OfferingS1(owner, issuer, name, symbol, tokens));
+        address newToken = address(new OfferingS1(owner, issuer, name, symbol, tokens, catContractAddress));
         tokenContracts[symbol] = newToken;
     }
 

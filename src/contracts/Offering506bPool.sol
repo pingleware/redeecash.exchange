@@ -8,6 +8,9 @@ contract Offering506bPool {
 
     address owner;
 
+    // Event emitted when tokens are purchased
+    event TokensPurchased(address indexed buyer, uint256 amount);
+
     constructor() {
         owner = msg.sender;
     }
@@ -21,7 +24,7 @@ contract Offering506bPool {
         return owner;
     }
 
-    function createToken(address issuer, string memory name, string memory symbol, uint tokens, uint price) public isOwner {
+    function createToken(address issuer, string memory name, string memory symbol, uint tokens, uint price, address catContractAddress) public isOwner {
         require(tokenContracts[symbol] == address(0), "Token already exists");
 
         // 506(B) has unlimited amount
@@ -29,7 +32,7 @@ contract Offering506bPool {
         //require(offering <= 20000000,"exceeds the statutory maximum offering dollar amount");
         if (price > 0) {}
 
-        address newToken = address(new Offering506b(owner, issuer, name, symbol, tokens));
+        address newToken = address(new Offering506b(owner, issuer, name, symbol, tokens, catContractAddress));
         tokenContracts[symbol] = newToken;
     }
 

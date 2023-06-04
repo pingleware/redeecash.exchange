@@ -2,10 +2,13 @@
 pragma solidity >=0.4.22 <0.9.0;
 
 import "./IOffering506b.sol";
+import "./IConsolidatedAuditTrail.sol";
 
 contract Offering506b is IOffering506b {
 
-    constructor(address _owner, address _issuer, string memory _name,string memory _symbol, uint256 tokens) {
+    IConsolidatedAuditTrail catContract;
+
+    constructor(address _owner, address _issuer, string memory _name,string memory _symbol, uint256 tokens, address catContractAddress) {
         name = _name;
         symbol = _symbol; // Maximum 11 characters
         decimals = 0;
@@ -18,6 +21,8 @@ contract Offering506b is IOffering506b {
         balances[issuer] = _totalSupply;
         transfer_agents[issuer] = true;
         _transfer_agents.push(issuer);
+
+        catContract = IConsolidatedAuditTrail(catContractAddress);
     }
 
     function getMaxOffering() public view override returns(uint256) {
@@ -38,6 +43,9 @@ contract Offering506b is IOffering506b {
         balances[msg.sender] = SafeMath.safeSub(balances[msg.sender], tokens);
         balances[to] = SafeMath.safeAdd(balances[to], tokens);
         emit Transfer(msg.sender, to, tokens);
+        // save CAT
+        IConsolidatedAuditTrail.Transaction memory transaction = IConsolidatedAuditTrail.Transaction(msg.sender,to,tokens);
+        catContract.addAuditTrail(symbol,transaction,block.timestamp);
         return true;
     }
     
@@ -59,6 +67,9 @@ contract Offering506b is IOffering506b {
         allowed[from][to] = SafeMath.safeSub(allowed[from][to], tokens);
         balances[to] = SafeMath.safeAdd(balances[to], tokens);
         emit Transfer(from, to, tokens);
+        // save CAT
+        IConsolidatedAuditTrail.Transaction memory transaction = IConsolidatedAuditTrail.Transaction(from,to,tokens);
+        catContract.addAuditTrail(symbol,transaction,block.timestamp);
         return true;
     }
 
@@ -72,6 +83,9 @@ contract Offering506b is IOffering506b {
         _totalSupply = SafeMath.safeAdd(_totalSupply, _amount);
         balances[msg.sender] = SafeMath.safeAdd(balances[msg.sender], _amount);
         emit Transfer(address(0), msg.sender, _amount);
+        // save CAT
+        IConsolidatedAuditTrail.Transaction memory transaction = IConsolidatedAuditTrail.Transaction(address(0),msg.sender,_amount);
+        catContract.addAuditTrail(symbol,transaction,block.timestamp);
         return true;
     }
     
@@ -86,6 +100,9 @@ contract Offering506b is IOffering506b {
         _totalSupply = SafeMath.safeSub(_totalSupply, _amount);
         balances[msg.sender] = SafeMath.safeSub(balances[msg.sender], _amount);
         emit Transfer(msg.sender, address(0), _amount);
+        // save CAT
+        IConsolidatedAuditTrail.Transaction memory transaction = IConsolidatedAuditTrail.Transaction(msg.sender,address(0),_amount);
+        catContract.addAuditTrail(symbol,transaction,block.timestamp);
         return true;
     }
 
