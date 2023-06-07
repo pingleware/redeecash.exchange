@@ -1,20 +1,24 @@
 // SPDX-License-Identifier: CC-BY-4.0
 pragma solidity >=0.4.22 <0.9.0;
 
-import "./IOffering506c.sol";
+import "./IOffering.sol";
 import "./IConsolidatedAuditTrail.sol";
 
-contract Offering506c is IOffering506c {
+contract Offering is IOffering {
 
     IConsolidatedAuditTrail catContract;
 
-    constructor(address _owner, address _issuer, string memory _name,string memory _symbol, uint256 tokens, address catContractAddress) {
+    event UpdateDescription(address sender,string oldDescription,string newDescription);
+    event ChangeRestrictedSecrity(address sender,bool value);
+    event ChangeRule144Transfers(address sender,bool valule);
+
+    constructor(address _owner, address _issuer, string memory _name,string memory _symbol, uint256 _tokens, address _catContractAddress) {
         name = _name;
         symbol = _symbol; // Maximum 11 characters
         decimals = 0;
         owner = _owner;
         // adjust the totalSupply to equal the quotient of the max offering of $20,000,000 and the share price (or par value, whichever is greater)
-        _totalSupply = tokens;
+        _totalSupply = _tokens;
         // Give the issuer the total supply and authorize as a transfer agent
         issuer = _issuer;
         whitelisted[issuer] = true;
@@ -22,7 +26,7 @@ contract Offering506c is IOffering506c {
         transfer_agents[issuer] = true;
         _transfer_agents.push(issuer);
 
-        catContract = IConsolidatedAuditTrail(catContractAddress);
+        catContract = IConsolidatedAuditTrail(_catContractAddress);
     }
 
     function getMaxOffering() public view override returns(uint256) {
@@ -36,7 +40,7 @@ contract Offering506c is IOffering506c {
         require(to != address(0), "Null address");  
         require(whitelisted[to],"recipient is not authorized to receive tokens");                                       
         require(tokens > 0, "Invalid Value");
-        if (msg.sender != issuer) {
+        if (RULE144_TRANSFERS && msg.sender != issuer) {
             require (block.timestamp >= (transfer_log[msg.sender] + YEAR),"transfer not permitted under Rule 144, holding period has not elapsed");
         }
         transfer_log[to] = block.timestamp;
@@ -57,7 +61,7 @@ contract Offering506c is IOffering506c {
         require(from != address(0), "Null address");
         require(whitelisted[to],"recipient is not authorized to receive tokens");
         require(tokens > 0, "Invalid value"); 
-        if (from != issuer) {
+        if (RULE144_TRANSFERS && from != issuer) {
             require (block.timestamp >= (transfer_log[from] + YEAR),"transfer not permitted under Rule 144, holding period has not elapsed");
         }
         require(tokens <= balances[from], "Insufficient balance");
@@ -74,6 +78,8 @@ contract Offering506c is IOffering506c {
 
         return true;
     }
+
+
 
     /**
      * @dev mint : To increase total supply of tokens
@@ -110,6 +116,20 @@ contract Offering506c is IOffering506c {
         return true;
     }
 
+    function setDESCRIPTION(string memory description) public isTransferAgent {
+        string memory oldDescription = DESCRIPTION;
+        DESCRIPTION = description;
+        emit UpdateDescription(msg.sender, oldDescription, DESCRIPTION);
+    }
+    function setRESTRICTED(bool value) public isTransferAgent {
+        RESTRICTED_SECURITY = value;
+        emit ChangeRestrictedSecrity(msg.sender, value);
+    }
+    function setRULE144TRANSFERS(bool value) public isTransferAgent {
+        RULE144_TRANSFERS = value;
+        emit ChangeRule144Transfers(msg.sender, value);
+    }
+
     function setCUSIP(string memory cusip) override public isTransferAgent {
         string memory oldCUSIP = CUSIP;
         CUSIP = cusip;
@@ -130,5 +150,4 @@ contract Offering506c is IOffering506c {
         MAX_OFFERING_SHARES = value;
         emit UpdateMaxShares(msg.sender,MAX_OFFERING_SHARES,oldMaxShares);
     }
-
 }

@@ -18,6 +18,9 @@ abstract contract BaseOffering is IERC20TOKEN {
     mapping(address => uint256) transfer_log;
     mapping(address => bool) whitelisted;
     mapping(address => bool) transfer_agents;
+    mapping(address => uint256) public allocation;
+    mapping(address => uint256) public deallocation;
+    mapping(address => uint256) public transfer_allocation;
 
     mapping(address => uint256) requested_purchase;
     mapping(address => uint256) requested_selling;
@@ -34,6 +37,12 @@ abstract contract BaseOffering is IERC20TOKEN {
     event UpdateSECFileNumber(address transferAgent, string newSECFileNumber, string oldSECFileNumber);
     event UpdateMaxOffering(address transferAgent, uint256 newMaxOffering, uint256 oldMaxOffering);
     event UpdateMaxShares(address transferAgent, uint256 newShares,uint256 oldhares);
+    event AddedTransferAgent(address sender,address transferAgent);
+
+    modifier isOwner() {
+        require(msg.sender == owner,"not authorized");
+        _;
+    }
 
     modifier isAuthorized() {
         require(whitelisted[msg.sender],"not authorized");
@@ -48,6 +57,11 @@ abstract contract BaseOffering is IERC20TOKEN {
     function getOwner() public view returns(address) {
         return owner;
     }
+
+    function getIssuer() public view returns (address) {
+        return issuer;
+    }
+
 
     function addInvestor(address investor, uint investor_type)
         public isTransferAgent
@@ -65,13 +79,14 @@ abstract contract BaseOffering is IERC20TOKEN {
         whitelisted[investor] = true;
     }
 
-    function addTransferAgent(address transferAgent) public
+    function addTransferAgent(address transferAgent) public isOwner
     {
         require(msg.sender == owner,"only for owner access");
         require(msg.sender != transferAgent,"contract owner cannot be the transfer agent");
         require(transfer_agents[transferAgent] == false,"transfer agent already exists");
         transfer_agents[transferAgent] = true;
         _transfer_agents.push(transferAgent);
+        emit AddedTransferAgent(msg.sender, transferAgent);
     }
 
     function getTransferAgents() public view returns (address[] memory) {
@@ -90,12 +105,32 @@ abstract contract BaseOffering is IERC20TOKEN {
         return requested_selling[investor];
     }
 
+    function checkWhitelisted() public view override returns (bool) {
+        return whitelisted[msg.sender];
+    }
+
+    function checkTransferAgent() public view override returns (bool) {
+        return transfer_agents[msg.sender];
+    }
+
+    function getBalanceFrom(address wallet) public view override returns (uint256) {
+        return balances[wallet];
+    }
+
+
     /**
      * @dev allowance : Check approved balance
      */
     function allowance(address tokenOwner, address spender) virtual override public view returns (uint remaining) {
         return allowed[tokenOwner][spender];
     }
+
+    function updateTransferAllocation(address _issuer, address wallet,uint256 amount) public override isTransferAgent {
+        require(_issuer == issuer,"not authorized issuer");
+        require(whitelisted[wallet],"trader is not whitelisted");
+        transfer_allocation[wallet] = amount;
+    }
+
     
     /**
      * @dev approve : Approve token for spender
@@ -162,9 +197,11 @@ abstract contract BaseOffering is IERC20TOKEN {
         return balances[tokenOwner];
     }
 
+
     function setCUSIP(string memory cusip) virtual public;
     function setSECFilenumber(string memory fileNumber) virtual public;
     function setMaxOffering(uint256 value) virtual public;
     function setMaxShares(uint256 value) virtual public;
+
 
 }
