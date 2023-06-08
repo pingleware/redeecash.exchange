@@ -1,8 +1,19 @@
 # RedeeCash Exchange Data
 
-This folder will hold the entity voluntary reporting that is not offered by the SEC EDGAR system.
+The RedeeCash Exchange data has been relocated to [https://github.com/pingleware/redeecash.exchange.data.git](https://github.com/pingleware/redeecash.exchange.data.git)
 
-The directory structure top level will be the SEC assigned filer CIK followed by the SEC assigned file number and each file with a unique filename suffixed with the filing type.
+The reporting application to create XML report files or submission is located at [https://github.com/pingleware/redeecash.exchange.reporting](https://github.com/pingleware/redeecash.exchange.reporting)
+
+To submit your voluntary filings, begin 
+
+1. fork the https://github.com/pingleware/redeecash.exchange.data
+2. clone your copy of the fork
+3. create a new top directory specifying your CIK number that the SEC has assigned
+4. for each filing, create a sub directory with the file number being reference
+5. using the redeecash.exchange.reporting application, create the necessary reporting files
+6. copy that file to the subdirectory inder your CIK/file-number
+7. add and commit your changes to your fork copy
+8. notify the  [https://github.com/pingleware/redeecash.exchange.data.git](https://github.com/pingleware/redeecash.exchange.data.git) repository of your changes.
 
 ## New Filing Types
 
