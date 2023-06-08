@@ -93,4 +93,6 @@ An initial overview of the RedeeCash Exchange registration,
 
 PRESSPAGE ENTERTAINMENT INC dba REDEECASH current [AML Policy](files/aml-policy.pdf).
 
+[Customer Affidavit](files/customer-affidavit.pdf) for AML compliance.
+
 Assigned staff should consult initially with their direct supervisors, as well as OMI and/or the Division of Trading and Markets, as appropriate.
