@@ -89,4 +89,6 @@ An initial overview of the RedeeCash Exchange registration,
 
 [Digital Asset Market Structure Discussion Draft](files/HHRG-118-AG00-20230606-SD002.pdf)
 
+[Digital Asset Market Structure Bill Draft](files/digital_002_xml.pdf)
+
 Assigned staff should consult initially with their direct supervisors, as well as OMI and/or the Division of Trading and Markets, as appropriate.
