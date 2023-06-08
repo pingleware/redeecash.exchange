@@ -42,6 +42,12 @@ A company does not need to be listed on the RedeeCash Exchange to submit reports
 
 The application to assist in creating the corresponding XML file will be distributed at [https://github.com/pingleware/redeecash.exchange.reporting](https://github.com/pingleware/redeecash.exchange.reporting)
 
+## AML Policy
+
+See [https://www.finra.org/compliance-tools/anti-money-laundering-template-small-firms](https://www.finra.org/compliance-tools/anti-money-laundering-template-small-firms)
+
+PRESSPAGE ENTERTAINMENT INC dba REDEECASH current [AML Policy](../files/aml-policy.pdf).
+
 ## Private Network
 
 ### Example of using Regulation A Tier 1 offering
