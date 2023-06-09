@@ -37,6 +37,8 @@ contract OfferingS1 is IOfferingS1 {
 
         jurisdictions.push(string("all"));
 
+        MANDATORY_REPORTING = true;
+
         emit CreatedNewOffering(_owner, _issuer, _name, _symbol, tokens, catContractAddress, false);
     }
 

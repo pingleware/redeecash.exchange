@@ -5,10 +5,7 @@ import "./SafeMath.sol";
 import "./BaseOffering.sol";
 
 abstract contract IOfferingRegAT1 is BaseOffering {
-
     string public constant DESCRIPTION = string("Exempt Offering under Regulation A Tier 1");
-    bool public constant RESTRICTED_SECURITY = false;
-
     string public CUSIP = string("TO BE ASSIGNED");
     string public SEC_FILENUMBER = string("024-00000");
     uint256 public MAX_OFFERING = 20000000;
