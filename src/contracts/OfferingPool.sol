@@ -72,10 +72,10 @@ contract OfferingPool {
     }
 
 
-    function createToken(address _issuer, string memory _name, string memory _symbol, uint _tokens,address _catContractAddress,string memory _regulation) public isOwner {
+    function createToken(address _issuer, string memory _name, string memory _symbol, uint _tokens,address _catContractAddress,string memory _regulation,bool _exemptOffering) public isOwner {
         require(tokenContracts[_symbol].contractAddress == address(0), "Token already exists");
 
-        address newToken = address(new Offering(owner,_issuer,_name,_symbol, _tokens, _catContractAddress));
+        address newToken = address(new Offering(owner,_issuer,_name,_symbol, _tokens, _catContractAddress,_exemptOffering));
         tokenContracts[_symbol] = Token(_name,_symbol,newToken,_regulation);
     }
 
@@ -186,7 +186,7 @@ contract OfferingPool {
         return sellOrders[_currencyPair];
     }
 
-        // Function to place a buy order
+    // Function to place a buy order
     function placeBuyOrder(
         address _wallet,
         string calldata _currencyPair,
