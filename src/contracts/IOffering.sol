@@ -5,6 +5,7 @@ import "./BaseOffering.sol";
 
 abstract contract IOffering is BaseOffering {
     string public DESCRIPTION = string("TO BE DEFINED");
+    bool public EXEMPT_OFFERING = false;
     bool public RESTRICTED_SECURITY = false;
     bool public RULE144_TRANSFERS = false;
 

@@ -8,11 +8,14 @@ contract Offering is IOffering {
 
     IConsolidatedAuditTrail catContract;
 
+    string[] jurisdictions;
+
+
     event UpdateDescription(address sender,string oldDescription,string newDescription);
     event ChangeRestrictedSecrity(address sender,bool value);
     event ChangeRule144Transfers(address sender,bool valule);
 
-    constructor(address _owner, address _issuer, string memory _name,string memory _symbol, uint256 _tokens, address _catContractAddress) {
+    constructor(address _owner, address _issuer, string memory _name,string memory _symbol, uint256 _tokens, address _catContractAddress, bool _exemptOffering) {
         name = _name;
         symbol = _symbol; // Maximum 11 characters
         decimals = 0;
@@ -21,12 +24,16 @@ contract Offering is IOffering {
         _totalSupply = _tokens;
         // Give the issuer the total supply and authorize as a transfer agent
         issuer = _issuer;
-        whitelisted[issuer] = true;
+        whitelisted[issuer] = INVESTOR_struct(issuer,true,string("all"),9);
         balances[issuer] = _totalSupply;
         transfer_agents[issuer] = true;
         _transfer_agents.push(issuer);
 
         catContract = IConsolidatedAuditTrail(_catContractAddress);
+
+        jurisdictions.push(string("all"));
+
+        EXEMPT_OFFERING = _exemptOffering;
     }
 
     function getMaxOffering() public view override returns(uint256) {
@@ -38,7 +45,11 @@ contract Offering is IOffering {
      */ 
     function transfer(address to, uint tokens) virtual override public isAuthorized returns (bool success) {
         require(to != address(0), "Null address");  
-        require(whitelisted[to],"recipient is not authorized to receive tokens");                                       
+        if (EXEMPT_OFFERING) {
+            require(findJurisdiction(whitelisted[msg.sender].jurisdiction),"not authorized to send, out of jurisdiction");
+            require(findJurisdiction(whitelisted[to].jurisdiction),"not authorized to receive, out of jurisdiction");
+        }
+        require(whitelisted[to].active,"recipient is not authorized to receive tokens");                                       
         require(tokens > 0, "Invalid Value");
         if (RULE144_TRANSFERS && msg.sender != issuer) {
             require (block.timestamp >= (transfer_log[msg.sender] + YEAR),"transfer not permitted under Rule 144, holding period has not elapsed");
@@ -59,7 +70,11 @@ contract Offering is IOffering {
     function transferFrom(address from, address to, uint tokens) virtual override public isAuthorized returns (bool success) {
         require(to != address(0), "Null address");
         require(from != address(0), "Null address");
-        require(whitelisted[to],"recipient is not authorized to receive tokens");
+        if (EXEMPT_OFFERING) {
+            require(findJurisdiction(whitelisted[from].jurisdiction),"not authorized to send, out of jurisdiction");
+            require(findJurisdiction(whitelisted[to].jurisdiction),"not authorized to receive, out of jurisdiction");
+        }
+        require(whitelisted[to].active,"recipient is not authorized to receive tokens");
         require(tokens > 0, "Invalid value"); 
         if (RULE144_TRANSFERS && from != issuer) {
             require (block.timestamp >= (transfer_log[from] + YEAR),"transfer not permitted under Rule 144, holding period has not elapsed");
