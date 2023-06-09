@@ -40,11 +40,33 @@ contract SpotCurrencyToken is ISpotCurrencyToken {
         _;
     }
 
-
-    modifier isWhitelisted() {
-        require(whitelisted[msg.sender],"not authorized to mint tokens");
+    modifier isJurisdiction() {
+        require(findJurisdiction(whitelisted[msg.sender].jurisdiction),"not authorized for the jurisdiction");
         _;
     }
+
+
+    modifier isWhitelisted() {
+        require(whitelisted[msg.sender].active,"not authorized to mint tokens");
+        _;
+    }
+
+    function findJurisdiction(string memory jurisdiction) public override view returns(bool) {
+        bool found = false;
+        for (uint i=0; i<jurisdictions.length; i++) {
+            if (keccak256(bytes(jurisdictions[i])) == keccak256(bytes(jurisdiction))) {
+                found = true;
+            }            
+        }
+        return found;
+    }
+
+    function addJurisdiction(string memory jurisdiction) override external {
+        bool found = findJurisdiction(jurisdiction);
+        require(found == false,"jurisdiction has already been added");
+        jurisdictions.push(jurisdiction);
+    }
+
 
     function addTransferAgent(address wallet) public override isOwner {
         require(!transferAgents[wallet],"already a registered transfer agent");
@@ -53,15 +75,15 @@ contract SpotCurrencyToken is ISpotCurrencyToken {
         totalTransferAgents = _transferAgents.length;
     }
 
-    function addWhitelister(address wallet) public override isOwner {
-        require(whitelisted[wallet] == false,"already a registered trader");
-        whitelisted[wallet] = true;
+    function addWhitelister(address wallet,uint256 investor_type,string memory jurisdiction) public override isOwner {
+        require(whitelisted[wallet].active == false,"already a registered trader");
+        whitelisted[wallet] = INVESTOR_struct(wallet,true,jurisdiction,investor_type);
         _whitelisted.push(wallet);
         totalWhitelisted = _whitelisted.length;
     }
 
     function checkWhitelisted() public view override returns (bool) {
-        return whitelisted[msg.sender];
+        return whitelisted[msg.sender].active;
     }
 
     function checkTransferAgent() public view override returns (bool) {
@@ -91,16 +113,15 @@ contract SpotCurrencyToken is ISpotCurrencyToken {
     }
 
     function addTraderAllocation(address wallet,uint256 amount) public override isIssuer {
-        require(whitelisted[wallet],"trader is not whitelisted");
+        require(whitelisted[wallet].active,"trader is not whitelisted");
         allocation[wallet] = amount;
     }
     function addTraderDeallocation(address wallet,uint256 amount) public override isIssuer {
-        require(whitelisted[wallet],"trader is not whitelisted");
+        require(whitelisted[wallet].active,"trader is not whitelisted");
         deallocation[wallet] = amount;
     }
-    function updateTransferAllocation(address _issuer, address wallet,uint256 amount) public override {
-        require(_issuer == issuer,"not authorized issuer");
-        require(whitelisted[wallet],"trader is not whitelisted");
+    function updateTransferAllocation(address wallet,uint256 amount) public override isIssuer {
+        require(whitelisted[wallet].active,"trader is not whitelisted");
         transfer_allocation[wallet] = amount;
     }
 
@@ -113,7 +134,7 @@ contract SpotCurrencyToken is ISpotCurrencyToken {
     //
     // minting is when adding tokens to totalSupply, because gold reserves have increase through a trader purchase
     // permits a buyer to buy more tokens, if there are enough gold reserves
-    function mint(uint256 _value) public payable override isWhitelisted {
+    function mint(uint256 _value) public payable override isWhitelisted isJurisdiction {
         require(_value > 0, "Invalid value");
         uint256 total = getTotal(); // get the current total of minted tokens of all wallet balances
         require((_value + total) <= goldReserves,"not enough gold reserves"); // add the desired new amount to the total and verify enough gol reserves

@@ -17,12 +17,14 @@ contract OfferingRegAT1 is IOfferingRegAT1 {
         _totalSupply = tokens;
         // Give the issuer the total supply and authorize as a transfer agent
         issuer = _issuer;
-        whitelisted[issuer] = true;
+        whitelisted[issuer] = INVESTOR_struct(issuer,true,string("all"),9);
         balances[issuer] = _totalSupply;
         transfer_agents[issuer] = true;
         _transfer_agents.push(issuer);
 
         catContract = IConsolidatedAuditTrail(catContractAddress);
+
+        jurisdictions.push(string("all"));
     }
 
     function getMaxOffering() public view override returns(uint256) {
@@ -35,7 +37,9 @@ contract OfferingRegAT1 is IOfferingRegAT1 {
      */ 
     function transfer(address to, uint tokens) virtual override public isTransferAgent returns (bool success) {
         require(to != address(0), "Null address");  
-        require(whitelisted[to],"recipient is not authorized to receive tokens");                                       
+        require(findJurisdiction(whitelisted[msg.sender].jurisdiction),"not authorized to send, out of jurisdiction");
+        require(findJurisdiction(whitelisted[to].jurisdiction),"not authorized to receive, out of jurisdiction");
+        require(whitelisted[to].active,"recipient is not authorized to receive tokens");                                       
         require(tokens > 0, "Invalid Value");
         if (msg.sender != issuer) {
             bool found_affialiate_investor = false;
@@ -64,7 +68,9 @@ contract OfferingRegAT1 is IOfferingRegAT1 {
     function transferFrom(address from, address to, uint tokens) virtual override public isTransferAgent returns (bool success) {
         require(to != address(0), "Null address");
         require(from != address(0), "Null address");
-        require(whitelisted[to],"recipient is not authorized to receive tokens");
+        require(findJurisdiction(whitelisted[from].jurisdiction),"not authorized to send, out of jurisdiction");
+        require(findJurisdiction(whitelisted[to].jurisdiction),"not authorized to receive, out of jurisdiction");
+        require(whitelisted[to].active,"recipient is not authorized to receive tokens");
         require(tokens > 0, "Invalid value"); 
         if (from != issuer) {
             bool found_affialiate_investor = false;
@@ -96,7 +102,7 @@ contract OfferingRegAT1 is IOfferingRegAT1 {
      */ 
     function mint(uint256 _amount) public override returns (bool) {
         require(_amount >= 0, "Invalid amount");
-        require(issuer == msg.sender, "not authorized, only the owner can mint more tokens");
+        require(issuer == msg.sender, "not authorized, only the issuer can mint more tokens");
         require(_totalSupply < MAX_OFFERING_SHARES,"maximum offering has been reached, minting is disabled");
         _totalSupply = SafeMath.safeAdd(_totalSupply, _amount);
         balances[msg.sender] = SafeMath.safeAdd(balances[msg.sender], _amount);
@@ -112,7 +118,7 @@ contract OfferingRegAT1 is IOfferingRegAT1 {
      */ 
     function burn(uint256 _amount) public override returns (bool) {
         require(_amount >= 0, "Invalid amount");
-        require(issuer == msg.sender, "not authorized, only the owner can burn more tokens");
+        require(issuer == msg.sender, "not authorized, only the issuer can burn more tokens");
         require(_amount <= balances[msg.sender], "Insufficient Balance");
         require(_totalSupply > 0,"no remaining tokens to burn");
         _totalSupply = SafeMath.safeSub(_totalSupply, _amount);

@@ -5,6 +5,13 @@ import "./SafeMath.sol";
 import "./IERC20TOKEN.sol";
 
 abstract contract BaseOffering is IERC20TOKEN {
+    struct INVESTOR_struct {
+        address wallet;
+        bool active;
+        string jurisdiction;
+        uint level;
+    }
+
     uint256 public constant YEAR = 365 days;
     string public name;
     string public symbol;
@@ -16,7 +23,7 @@ abstract contract BaseOffering is IERC20TOKEN {
     mapping(address => mapping(address => uint)) allowed;
 
     mapping(address => uint256) transfer_log;
-    mapping(address => bool) whitelisted;
+    mapping(address => INVESTOR_struct) whitelisted;
     mapping(address => bool) transfer_agents;
     mapping(address => uint256) public allocation;
     mapping(address => uint256) public deallocation;
@@ -30,6 +37,8 @@ abstract contract BaseOffering is IERC20TOKEN {
     address[] affiliate_investors;
     address[] broker_dealers;
     address[] _transfer_agents;
+
+    string[] jurisdictions;
 
     event Disapproval(address indexed investor, uint tokens, string reason);
     event Request(address investor,uint tokens,bool buy);
@@ -45,7 +54,7 @@ abstract contract BaseOffering is IERC20TOKEN {
     }
 
     modifier isAuthorized() {
-        require(whitelisted[msg.sender],"not authorized");
+        require(whitelisted[msg.sender].active,"not authorized");
         _;
     }
 
@@ -53,6 +62,21 @@ abstract contract BaseOffering is IERC20TOKEN {
         require(transfer_agents[msg.sender],"not authorized transfer agent");
         _;
     } 
+
+    modifier isJurisdiction() {
+        require(findJurisdiction(whitelisted[msg.sender].jurisdiction),"not authorized for the jurisdiction");
+        _;
+    }
+
+    function findJurisdiction(string memory jurisdiction) public view returns(bool) {
+        bool found = false;
+        for (uint i=0; i<jurisdictions.length; i++) {
+            if (keccak256(bytes(jurisdictions[i])) == keccak256(bytes(jurisdiction))) {
+                found = true;
+            }            
+        }
+        return found;
+    }
 
     function getOwner() public view returns(address) {
         return owner;
@@ -62,11 +86,17 @@ abstract contract BaseOffering is IERC20TOKEN {
         return issuer;
     }
 
+    function addJurisdiction(string memory jurisdiction) external {
+        bool found = findJurisdiction(jurisdiction);
+        require(found == false,"jurisdiction has already been added");
+        jurisdictions.push(jurisdiction);
+    }
 
-    function addInvestor(address investor, uint investor_type)
+
+    function addInvestor(address investor, uint investor_type,string memory jurisdiction)
         public isTransferAgent
     {
-        require(whitelisted[investor] == false,"investor already exists");
+        require(whitelisted[investor].active == false,"investor already exists");
         if (investor_type == 1) {
           accredited_investors.push(investor);
         } else if (investor_type == 2) {
@@ -76,7 +106,8 @@ abstract contract BaseOffering is IERC20TOKEN {
         } else {
           nonaccredited_investors.push(investor);
         }
-        whitelisted[investor] = true;
+        INVESTOR_struct memory _investor = INVESTOR_struct(msg.sender,true,jurisdiction,investor_type);
+        whitelisted[investor] = _investor;
     }
 
     function addTransferAgent(address transferAgent) public isOwner
@@ -106,7 +137,7 @@ abstract contract BaseOffering is IERC20TOKEN {
     }
 
     function checkWhitelisted() public view override returns (bool) {
-        return whitelisted[msg.sender];
+        return whitelisted[msg.sender].active;
     }
 
     function checkTransferAgent() public view override returns (bool) {
@@ -127,7 +158,7 @@ abstract contract BaseOffering is IERC20TOKEN {
 
     function updateTransferAllocation(address _issuer, address wallet,uint256 amount) public override isTransferAgent {
         require(_issuer == issuer,"not authorized issuer");
-        require(whitelisted[wallet],"trader is not whitelisted");
+        require(whitelisted[wallet].active,"trader is not whitelisted");
         transfer_allocation[wallet] = amount;
     }
 
@@ -164,6 +195,7 @@ abstract contract BaseOffering is IERC20TOKEN {
     }
 
     function requestBuy(uint tokens) public isAuthorized returns (bool success) {
+        require(findJurisdiction(whitelisted[msg.sender].jurisdiction),"not authroized to buy, out of jurisdiction");
         requested_purchase[msg.sender] = SafeMath.add(requested_purchase[msg.sender],tokens);
         emit Request(msg.sender,tokens,true);
         return true;
@@ -174,6 +206,7 @@ abstract contract BaseOffering is IERC20TOKEN {
     }
 
     function requestSell(uint tokens) public isAuthorized returns (bool success) {
+        require(findJurisdiction(whitelisted[msg.sender].jurisdiction),"not authroized to buy, out of jurisdiction");
         requested_selling[msg.sender] = SafeMath.add(requested_selling[msg.sender],tokens);
         emit Request(msg.sender,tokens,false);
         return true;

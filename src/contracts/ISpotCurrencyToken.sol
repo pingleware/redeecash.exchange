@@ -3,6 +3,13 @@ pragma solidity >=0.4.22 <0.9.0;
 
 
 abstract contract ISpotCurrencyToken {
+    struct INVESTOR_struct {
+        address wallet;
+        bool active;
+        string jurisdiction;
+        uint level;
+    }
+
     address public owner;
     address public issuer;
 
@@ -13,7 +20,7 @@ abstract contract ISpotCurrencyToken {
     uint256 public mintingFeePercentage;
     
     mapping(address => uint256) public balances;
-    mapping(address => bool) public whitelisted;
+    mapping(address => INVESTOR_struct) public whitelisted;
     mapping(address => bool) public transferAgents;
     mapping(address => uint256) public allocation;
     mapping(address => uint256) public deallocation;
@@ -21,6 +28,8 @@ abstract contract ISpotCurrencyToken {
 
     address[] _whitelisted;
     address[] _transferAgents;
+
+    string[] jurisdictions;
 
     uint256 totalWhitelisted = 0;
     uint256 totalTransferAgents = 0;
@@ -35,8 +44,10 @@ abstract contract ISpotCurrencyToken {
     event Withdrawal(address indexed recipient, uint256 amount);
     event Deposit(address indexed sender, uint256 amount);
 
+    function findJurisdiction(string memory jurisdiction) virtual public view returns(bool);
+    function addJurisdiction(string memory jurisdiction) virtual external;
     function addTransferAgent(address wallet) virtual public;
-    function addWhitelister(address wallet) virtual public;
+    function addWhitelister(address wallet,uint256 investor_type,string memory jurisdiction) virtual public;
     function checkWhitelisted() virtual public view returns (bool);
     function checkTransferAgent() virtual public view returns (bool);
     function getIssuer() virtual public view returns (address);
@@ -46,7 +57,7 @@ abstract contract ISpotCurrencyToken {
     function reduceGoldReserves(uint256 amount) virtual public;
     function addTraderAllocation(address wallet,uint256 amount) virtual public;
     function addTraderDeallocation(address wallet,uint256 amount) virtual public;
-    function updateTransferAllocation(address issuer,address wallet,uint256 amount) virtual public;
+    function updateTransferAllocation(address wallet,uint256 amount) virtual public;
     function mint(uint256 _value) virtual public payable;
     function burn(address wallet,uint256 _value) virtual public;
     function transferFrom(address _from, address _to, uint256 _value) virtual public returns (bool);
