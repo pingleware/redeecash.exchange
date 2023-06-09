@@ -8,6 +8,7 @@ contract Offering is IOffering {
 
     IConsolidatedAuditTrail catContract;
 
+    event CreatedNewOffering(address owner,address issuer,string name,string symbol,uint256 tokens,address catAddress,bool exemptOffering);
     event UpdateDescription(address sender,string oldDescription,string newDescription);
     event ChangeRestrictedSecrity(address sender,bool value);
     event ChangeRule144Transfers(address sender,bool valule);
@@ -31,6 +32,8 @@ contract Offering is IOffering {
         jurisdictions.push(string("all"));
 
         EXEMPT_OFFERING = _exemptOffering;
+
+        emit CreatedNewOffering(_owner, _issuer, _name, _symbol, _tokens, _catContractAddress, _exemptOffering);
     }
 
     function getMaxOffering() public view override returns(uint256) {
