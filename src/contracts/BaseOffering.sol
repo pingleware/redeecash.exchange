@@ -40,6 +40,10 @@ abstract contract BaseOffering is IERC20TOKEN {
 
     string[] jurisdictions;
 
+    event CreatedNewOffering(address owner,address issuer,string name,string symbol,uint256 tokens,address catAddress,bool exemptOffering);
+    event UpdateDescription(address sender,string oldDescription,string newDescription);
+    event ChangeRestrictedSecrity(address sender,bool value);
+    event ChangeRule144Transfers(address sender,bool valule);
     event Disapproval(address indexed investor, uint tokens, string reason);
     event Request(address investor,uint tokens,bool buy);
     event UpdateCUSIP(address transferAgent, string newCUSIP, string oldCUSIP);

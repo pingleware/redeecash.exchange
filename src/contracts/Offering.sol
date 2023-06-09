@@ -8,11 +8,6 @@ contract Offering is IOffering {
 
     IConsolidatedAuditTrail catContract;
 
-    event CreatedNewOffering(address owner,address issuer,string name,string symbol,uint256 tokens,address catAddress,bool exemptOffering);
-    event UpdateDescription(address sender,string oldDescription,string newDescription);
-    event ChangeRestrictedSecrity(address sender,bool value);
-    event ChangeRule144Transfers(address sender,bool valule);
-
     constructor(address _owner, address _issuer, string memory _name,string memory _symbol, uint256 _tokens, address _catContractAddress, bool _exemptOffering) {
         name = _name;
         symbol = _symbol; // Maximum 11 characters

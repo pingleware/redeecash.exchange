@@ -36,6 +36,8 @@ contract OfferingS1 is IOfferingS1 {
         catContract = IConsolidatedAuditTrail(catContractAddress);
 
         jurisdictions.push(string("all"));
+
+        emit CreatedNewOffering(_owner, _issuer, _name, _symbol, tokens, catContractAddress, false);
     }
 
     function getMaxOffering() public view override returns(uint256) {

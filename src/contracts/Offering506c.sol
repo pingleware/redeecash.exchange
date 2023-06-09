@@ -8,6 +8,7 @@ contract Offering506c is IOffering506c {
 
     IConsolidatedAuditTrail catContract;
 
+
     constructor(address _owner, address _issuer, string memory _name,string memory _symbol, uint256 tokens, address catContractAddress) {
         name = _name;
         symbol = _symbol; // Maximum 11 characters
@@ -25,6 +26,8 @@ contract Offering506c is IOffering506c {
         catContract = IConsolidatedAuditTrail(catContractAddress);
 
         jurisdictions.push(string("all")); // add ALL to jursidictions, to permit transfer by approved participants
+
+        emit CreatedNewOffering(_owner, _issuer, _name, _symbol, tokens, catContractAddress, true);
     }
 
     function getMaxOffering() public view override returns(uint256) {
