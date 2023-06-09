@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const firmSchema = new mongoose.Schema({
+    mpid: {
+      type: String,
+      required: true,
+    },
     name: {
       type: String,
       required: true,
