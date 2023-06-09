@@ -57,7 +57,7 @@ abstract contract ISpotCurrencyToken {
     function reduceGoldReserves(uint256 amount) virtual public;
     function addTraderAllocation(address wallet,uint256 amount) virtual public;
     function addTraderDeallocation(address wallet,uint256 amount) virtual public;
-    function updateTransferAllocation(address wallet,uint256 amount) virtual public;
+    function updateTransferAllocation(address issuer,address wallet,uint256 amount) virtual public;
     function mint(uint256 _value) virtual public payable;
     function burn(address wallet,uint256 _value) virtual public;
     function transferFrom(address _from, address _to, uint256 _value) virtual public returns (bool);

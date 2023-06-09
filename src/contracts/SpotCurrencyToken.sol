@@ -120,7 +120,8 @@ contract SpotCurrencyToken is ISpotCurrencyToken {
         require(whitelisted[wallet].active,"trader is not whitelisted");
         deallocation[wallet] = amount;
     }
-    function updateTransferAllocation(address wallet,uint256 amount) public override isIssuer {
+    function updateTransferAllocation(address _issuer,address wallet,uint256 amount) public override isIssuer {
+        require(_issuer == issuer,"not authorized, invalid issuer");
         require(whitelisted[wallet].active,"trader is not whitelisted");
         transfer_allocation[wallet] = amount;
     }
