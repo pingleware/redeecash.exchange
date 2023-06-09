@@ -8,9 +8,6 @@ contract Offering is IOffering {
 
     IConsolidatedAuditTrail catContract;
 
-    string[] jurisdictions;
-
-
     event UpdateDescription(address sender,string oldDescription,string newDescription);
     event ChangeRestrictedSecrity(address sender,bool value);
     event ChangeRule144Transfers(address sender,bool valule);
