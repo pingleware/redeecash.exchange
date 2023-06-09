@@ -14,6 +14,11 @@ abstract contract BaseOffering is IERC20TOKEN {
 
     uint256 public constant YEAR = 365 days;
     uint256 public constant SIXMONTHS = 183 days;
+
+    bool public RESTRICTED_SECURITY;
+    bool public MANDATORY_REPORTING = false;
+
+    int public MAX_NONACCREDITED_INVESTORS = -1;
     
     string public name;
     string public symbol;
@@ -48,6 +53,7 @@ abstract contract BaseOffering is IERC20TOKEN {
     event ChangeRule144Transfers(address sender,bool valule);
     event Disapproval(address indexed investor, uint tokens, string reason);
     event Request(address investor,uint tokens,bool buy);
+    event UpdateRestrictedSecurity(address sender,bool oldValue,bool newValue);
     event UpdateCUSIP(address transferAgent, string newCUSIP, string oldCUSIP);
     event UpdateSECFileNumber(address transferAgent, string newSECFileNumber, string oldSECFileNumber);
     event UpdateMaxOffering(address transferAgent, uint256 newMaxOffering, uint256 oldMaxOffering);
@@ -110,7 +116,12 @@ abstract contract BaseOffering is IERC20TOKEN {
         } else if (investor_type == 3) {
           broker_dealers.push(investor);
         } else {
-          nonaccredited_investors.push(investor);
+            if (MAX_NONACCREDITED_INVESTORS > 0) {
+                int256 count = int256(nonaccredited_investors.length);
+                if (count <= MAX_NONACCREDITED_INVESTORS) {
+                    nonaccredited_investors.push(investor);
+                }
+            }
         }
         INVESTOR_struct memory _investor = INVESTOR_struct(msg.sender,true,jurisdiction,investor_type);
         whitelisted[investor] = _investor;
@@ -236,6 +247,11 @@ abstract contract BaseOffering is IERC20TOKEN {
         return balances[tokenOwner];
     }
 
+    function setRestrictedSecurity(bool value) external {
+        bool oldValue = RESTRICTED_SECURITY;
+        RESTRICTED_SECURITY = value;
+        emit UpdateRestrictedSecurity(msg.sender, oldValue, value);
+    }
 
     function setCUSIP(string memory cusip) virtual public;
     function setSECFilenumber(string memory fileNumber) virtual public;
