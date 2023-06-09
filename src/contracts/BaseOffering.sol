@@ -13,6 +13,8 @@ abstract contract BaseOffering is IERC20TOKEN {
     }
 
     uint256 public constant YEAR = 365 days;
+    uint256 public constant SIXMONTHS = 183 days;
+    
     string public name;
     string public symbol;
     uint8  public decimals;
