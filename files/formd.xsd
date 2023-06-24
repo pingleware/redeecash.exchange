@@ -1,0 +1,210 @@
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="edgarSubmission" type="edgarSubmissionType"/>
+  <xs:complexType name="issuerAddressType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="street1"/>
+      <xs:element type="xs:string" name="street2"/>
+      <xs:element type="xs:string" name="city"/>
+      <xs:element type="xs:string" name="stateOrCountry"/>
+      <xs:element type="xs:string" name="stateOrCountryDescription"/>
+      <xs:element type="xs:short" name="zipCode"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="issuerPreviousNameListType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="value"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="edgarPreviousNameListType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="value"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="yearOfIncType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="withinFiveYears"/>
+      <xs:element type="xs:short" name="value"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="primaryIssuerType">
+    <xs:sequence>
+      <xs:element type="xs:int" name="cik"/>
+      <xs:element type="xs:string" name="entityName"/>
+      <xs:element type="issuerAddressType" name="issuerAddress"/>
+      <xs:element type="xs:int" name="issuerPhoneNumber"/>
+      <xs:element type="xs:string" name="jurisdictionOfInc"/>
+      <xs:element type="issuerPreviousNameListType" name="issuerPreviousNameList"/>
+      <xs:element type="edgarPreviousNameListType" name="edgarPreviousNameList"/>
+      <xs:element type="xs:string" name="entityType"/>
+      <xs:element type="yearOfIncType" name="yearOfInc"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="relatedPersonNameType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="firstName"/>
+      <xs:element type="xs:string" name="middleName"/>
+      <xs:element type="xs:string" name="lastName"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="relatedPersonAddressType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="street1"/>
+      <xs:element type="xs:string" name="street2"/>
+      <xs:element type="xs:string" name="city"/>
+      <xs:element type="xs:string" name="stateOrCountry"/>
+      <xs:element type="xs:string" name="stateOrCountryDescription"/>
+      <xs:element type="xs:short" name="zipCode"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="relatedPersonRelationshipListType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="relationship"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="relatedPersonInfoType">
+    <xs:sequence>
+      <xs:element type="relatedPersonNameType" name="relatedPersonName"/>
+      <xs:element type="relatedPersonAddressType" name="relatedPersonAddress"/>
+      <xs:element type="relatedPersonRelationshipListType" name="relatedPersonRelationshipList"/>
+      <xs:element type="xs:string" name="relationshipClarification"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="relatedPersonsListType">
+    <xs:sequence>
+      <xs:element type="relatedPersonInfoType" name="relatedPersonInfo"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="industryGroupType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="industryGroupType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="issuerSizeType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="revenueRange"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="federalExemptionsExclusionsType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="item"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="newOrAmendmentType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="isAmendment"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="dateOfFirstSaleType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="yetToOccur"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="typeOfFilingType">
+    <xs:sequence>
+      <xs:element type="newOrAmendmentType" name="newOrAmendment"/>
+      <xs:element type="dateOfFirstSaleType" name="dateOfFirstSale"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="durationOfOfferingType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="moreThanOneYear"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="typesOfSecuritiesOfferedType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="isEquityType"/>
+      <xs:element type="xs:string" name="isDebtType"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="businessCombinationTransactionType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="isBusinessCombinationTransaction"/>
+      <xs:element type="xs:string" name="clarificationOfResponse"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="offeringSalesAmountsType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="totalOfferingAmount"/>
+      <xs:element type="xs:byte" name="totalAmountSold"/>
+      <xs:element type="xs:string" name="totalRemaining"/>
+      <xs:element type="xs:string" name="clarificationOfResponse"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="investorsType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="hasNonAccreditedInvestors"/>
+      <xs:element type="xs:byte" name="totalNumberAlreadyInvested"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="salesCommissionsType">
+    <xs:sequence>
+      <xs:element type="xs:byte" name="dollarAmount"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="findersFeesType">
+    <xs:sequence>
+      <xs:element type="xs:byte" name="dollarAmount"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="salesCommissionsFindersFeesType">
+    <xs:sequence>
+      <xs:element type="salesCommissionsType" name="salesCommissions"/>
+      <xs:element type="findersFeesType" name="findersFees"/>
+      <xs:element type="xs:string" name="clarificationOfResponse"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="grossProceedsUsedType">
+    <xs:sequence>
+      <xs:element type="xs:byte" name="dollarAmount"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="useOfProceedsType">
+    <xs:sequence>
+      <xs:element type="grossProceedsUsedType" name="grossProceedsUsed"/>
+      <xs:element type="xs:string" name="clarificationOfResponse"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="signatureType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="issuerName"/>
+      <xs:element type="xs:string" name="signatureName"/>
+      <xs:element type="xs:string" name="nameOfSigner"/>
+      <xs:element type="xs:string" name="signatureTitle"/>
+      <xs:element type="xs:date" name="signatureDate"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="signatureBlockType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="authorizedRepresentative"/>
+      <xs:element type="signatureType" name="signature"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="offeringDataType">
+    <xs:sequence>
+      <xs:element type="industryGroupType" name="industryGroup"/>
+      <xs:element type="issuerSizeType" name="issuerSize"/>
+      <xs:element type="federalExemptionsExclusionsType" name="federalExemptionsExclusions"/>
+      <xs:element type="typeOfFilingType" name="typeOfFiling"/>
+      <xs:element type="durationOfOfferingType" name="durationOfOffering"/>
+      <xs:element type="typesOfSecuritiesOfferedType" name="typesOfSecuritiesOffered"/>
+      <xs:element type="businessCombinationTransactionType" name="businessCombinationTransaction"/>
+      <xs:element type="xs:byte" name="minimumInvestmentAccepted"/>
+      <xs:element type="xs:string" name="salesCompensationList"/>
+      <xs:element type="offeringSalesAmountsType" name="offeringSalesAmounts"/>
+      <xs:element type="investorsType" name="investors"/>
+      <xs:element type="salesCommissionsFindersFeesType" name="salesCommissionsFindersFees"/>
+      <xs:element type="useOfProceedsType" name="useOfProceeds"/>
+      <xs:element type="signatureBlockType" name="signatureBlock"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="edgarSubmissionType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="schemaVersion"/>
+      <xs:element type="xs:string" name="submissionType"/>
+      <xs:element type="xs:string" name="testOrLive"/>
+      <xs:element type="primaryIssuerType" name="primaryIssuer"/>
+      <xs:element type="relatedPersonsListType" name="relatedPersonsList"/>
+      <xs:element type="offeringDataType" name="offeringData"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>

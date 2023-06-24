@@ -1,0 +1,118 @@
+<edgarSubmission>
+<schemaVersion>X0708</schemaVersion>
+<submissionType>D</submissionType>
+<testOrLive>LIVE</testOrLive>
+<primaryIssuer>
+<cik>0001766947</cik>
+<entityName>PressPage Entertainment Inc</entityName>
+<issuerAddress>
+<street1>4055 SW 15 PL</street1>
+<street2>APT G</street2>
+<city>GAINESVILLE</city>
+<stateOrCountry>FL</stateOrCountry>
+<stateOrCountryDescription>FLORIDA</stateOrCountryDescription>
+<zipCode>32607</zipCode>
+</issuerAddress>
+<issuerPhoneNumber>2128790758</issuerPhoneNumber>
+<jurisdictionOfInc>FLORIDA</jurisdictionOfInc>
+<issuerPreviousNameList>
+<value>None</value>
+</issuerPreviousNameList>
+<edgarPreviousNameList>
+<value>None</value>
+</edgarPreviousNameList>
+<entityType>Corporation</entityType>
+<yearOfInc>
+<withinFiveYears>true</withinFiveYears>
+<value>2018</value>
+</yearOfInc>
+</primaryIssuer>
+<relatedPersonsList>
+<relatedPersonInfo>
+<relatedPersonName>
+<firstName>PATRICK</firstName>
+<middleName>ODONNELL</middleName>
+<lastName>INGLE</lastName>
+</relatedPersonName>
+<relatedPersonAddress>
+<street1>4055 SW 15 PL</street1>
+<street2>APT G</street2>
+<city>GAINESVILLE</city>
+<stateOrCountry>FL</stateOrCountry>
+<stateOrCountryDescription>FLORIDA</stateOrCountryDescription>
+<zipCode>32607</zipCode>
+</relatedPersonAddress>
+<relatedPersonRelationshipList>
+<relationship>Executive Officer</relationship>
+</relatedPersonRelationshipList>
+<relationshipClarification/>
+</relatedPersonInfo>
+</relatedPersonsList>
+<offeringData>
+<industryGroup>
+<industryGroupType>Other Technology</industryGroupType>
+</industryGroup>
+<issuerSize>
+<revenueRange>Decline to Disclose</revenueRange>
+</issuerSize>
+<federalExemptionsExclusions>
+<item>06b</item>
+</federalExemptionsExclusions>
+<typeOfFiling>
+<newOrAmendment>
+<isAmendment>false</isAmendment>
+</newOrAmendment>
+<dateOfFirstSale>
+<yetToOccur>true</yetToOccur>
+</dateOfFirstSale>
+</typeOfFiling>
+<durationOfOffering>
+<moreThanOneYear>true</moreThanOneYear>
+</durationOfOffering>
+<typesOfSecuritiesOffered>
+<isEquityType>true</isEquityType>
+<isDebtType>true</isDebtType>
+</typesOfSecuritiesOffered>
+<businessCombinationTransaction>
+<isBusinessCombinationTransaction>false</isBusinessCombinationTransaction>
+<clarificationOfResponse/>
+</businessCombinationTransaction>
+<minimumInvestmentAccepted>0</minimumInvestmentAccepted>
+<salesCompensationList/>
+<offeringSalesAmounts>
+<totalOfferingAmount>Indefinite</totalOfferingAmount>
+<totalAmountSold>0</totalAmountSold>
+<totalRemaining>Indefinite</totalRemaining>
+<clarificationOfResponse/>
+</offeringSalesAmounts>
+<investors>
+<hasNonAccreditedInvestors>false</hasNonAccreditedInvestors>
+<totalNumberAlreadyInvested>0</totalNumberAlreadyInvested>
+</investors>
+<salesCommissionsFindersFees>
+<salesCommissions>
+<dollarAmount>0</dollarAmount>
+</salesCommissions>
+<findersFees>
+<dollarAmount>0</dollarAmount>
+</findersFees>
+<clarificationOfResponse/>
+</salesCommissionsFindersFees>
+<useOfProceeds>
+<grossProceedsUsed>
+<dollarAmount>0</dollarAmount>
+</grossProceedsUsed>
+<clarificationOfResponse/>
+</useOfProceeds>
+<signatureBlock>
+<authorizedRepresentative>false</authorizedRepresentative>
+<signature>
+<issuerName>PressPage Entertainment Inc</issuerName>
+<signatureName>PATRICK ODONNELL INGLE</signatureName>
+<nameOfSigner>PATRICK ODONNELL INGLE</nameOfSigner>
+<signatureTitle>President</signatureTitle>
+<signatureDate>2019-02-05</signatureDate>
+</signature>
+</signatureBlock>
+</offeringData>
+</edgarSubmission>

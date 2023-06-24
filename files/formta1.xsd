@@ -1,0 +1,250 @@
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="edgarSubmission" type="edgarSubmissionType"/>
+  <xs:complexType name="filerCredentialsType">
+    <xs:sequence>
+      <xs:element type="xs:int" name="cik"/>
+      <xs:element type="xs:string" name="ccc"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="filerType">
+    <xs:sequence>
+      <xs:element type="filerCredentialsType" name="filerCredentials"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="flagsType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="returnCopyFlag"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="filerInfoType">
+    <xs:sequence>
+      <xs:element type="filerType" name="filer"/>
+      <xs:element type="flagsType" name="flags"/>
+      <xs:element type="xs:string" name="liveTestFlag"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="headerDataType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="submissionType"/>
+      <xs:element type="filerInfoType" name="filerInfo"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="principalOfficeAddressType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="street1"/>
+      <xs:element type="xs:string" name="city"/>
+      <xs:element type="xs:string" name="stateOrCountry"/>
+      <xs:element type="xs:int" name="zipCode"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="registrantType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="regulatoryAgency"/>
+      <xs:element type="xs:string" name="entityName"/>
+      <xs:element type="xs:int" name="finsNumber"/>
+      <xs:element type="principalOfficeAddressType" name="principalOfficeAddress"/>
+      <xs:element type="xs:string" name="differentMailingAddress"/>
+      <xs:element type="xs:long" name="telephoneNumber"/>
+      <xs:element type="xs:string" name="conductBusinessInOtherLocations"/>
+      <xs:element type="xs:string" name="selfTransferAgent"/>
+      <xs:element type="xs:string" name="engagedServiceCompany"/>
+      <xs:element type="xs:string" name="engagedAsServiceCompany"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="corporationPartnershipDataType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="entityName"/>
+      <xs:element type="xs:string" name="relationshipStartDate"/>
+      <xs:element type="xs:string" name="titleOrStatus"/>
+      <xs:element type="xs:string" name="ownershipCode"/>
+      <xs:element type="xs:string" name="controlPerson"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="otherControlManagementType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="otherEntity"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="otherControlFinanceType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="otherEntity"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="independentRegistrantType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="registrantType"/>
+      <xs:element type="corporationPartnershipDataType" name="corporationPartnershipData"/>
+      <xs:element type="otherControlManagementType" name="otherControlManagement"/>
+      <xs:element type="otherControlFinanceType" name="otherControlFinance"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="felonyOrMisdemeanorType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="involved"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="otherFelonyType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="involved"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="enjoinedInvestmentRelatedActivityType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="involved"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="violationOfInvestmentRelatedRegulationType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="involved"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="falseStatementOrOmissionType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="involved"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="violationOfRegulationsType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="involved"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="authorizationDeniedOrSuspendedType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="involved"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="registrationDeniedOrSuspendedType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="involved"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="fsrFalseStatementOrOmissionType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="involved"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="fsrViolationOfInvestmentRelatedRegulationType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="involved"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="fsrAuthorizationDeniedOrSuspendedType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="involved"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="fsrFoundOrderAgainstApplicantType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="involved"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="fsrRegistrationDeniedOrSuspendedType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="involved"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="fsrRevokedSuspendedLicenseType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="involved"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="federalOrStateRegulatoryAgencyType">
+    <xs:sequence>
+      <xs:element type="fsrFalseStatementOrOmissionType" name="fsrFalseStatementOrOmission"/>
+      <xs:element type="fsrViolationOfInvestmentRelatedRegulationType" name="fsrViolationOfInvestmentRelatedRegulation"/>
+      <xs:element type="fsrAuthorizationDeniedOrSuspendedType" name="fsrAuthorizationDeniedOrSuspended"/>
+      <xs:element type="fsrFoundOrderAgainstApplicantType" name="fsrFoundOrderAgainstApplicant"/>
+      <xs:element type="fsrRegistrationDeniedOrSuspendedType" name="fsrRegistrationDeniedOrSuspended"/>
+      <xs:element type="fsrRevokedSuspendedLicenseType" name="fsrRevokedSuspendedLicense"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="sraFalseStatementOrOmissionType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="involved"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="sraViolationOfRulesType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="involved"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="sraAuthorizationDeniedOrSuspendedType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="involved"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="sraRevokedSuspendedLicenseType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="involved"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="selfRegulatoryAgencyType">
+    <xs:sequence>
+      <xs:element type="sraFalseStatementOrOmissionType" name="sraFalseStatementOrOmission"/>
+      <xs:element type="sraViolationOfRulesType" name="sraViolationOfRules"/>
+      <xs:element type="sraAuthorizationDeniedOrSuspendedType" name="sraAuthorizationDeniedOrSuspended"/>
+      <xs:element type="sraRevokedSuspendedLicenseType" name="sraRevokedSuspendedLicense"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="foreignAgencyType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="involved"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="subjectOfProceedingsType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="involved"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="revokedBondType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="involved"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="unsatisfiedJudgementsOrLiensType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="involved"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="disciplinaryHistoryType">
+    <xs:sequence>
+      <xs:element type="felonyOrMisdemeanorType" name="felonyOrMisdemeanor"/>
+      <xs:element type="otherFelonyType" name="otherFelony"/>
+      <xs:element type="enjoinedInvestmentRelatedActivityType" name="enjoinedInvestmentRelatedActivity"/>
+      <xs:element type="violationOfInvestmentRelatedRegulationType" name="violationOfInvestmentRelatedRegulation"/>
+      <xs:element type="falseStatementOrOmissionType" name="falseStatementOrOmission"/>
+      <xs:element type="violationOfRegulationsType" name="violationOfRegulations"/>
+      <xs:element type="authorizationDeniedOrSuspendedType" name="authorizationDeniedOrSuspended"/>
+      <xs:element type="registrationDeniedOrSuspendedType" name="registrationDeniedOrSuspended"/>
+      <xs:element type="federalOrStateRegulatoryAgencyType" name="federalOrStateRegulatoryAgency"/>
+      <xs:element type="selfRegulatoryAgencyType" name="selfRegulatoryAgency"/>
+      <xs:element type="foreignAgencyType" name="foreignAgency"/>
+      <xs:element type="subjectOfProceedingsType" name="subjectOfProceedings"/>
+      <xs:element type="revokedBondType" name="revokedBond"/>
+      <xs:element type="unsatisfiedJudgementsOrLiensType" name="unsatisfiedJudgementsOrLiens"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="signatureType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="signatureName"/>
+      <xs:element type="xs:long" name="signaturePhoneNumber"/>
+      <xs:element type="xs:string" name="signatureTitle"/>
+      <xs:element type="xs:string" name="signatureDate"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="formDataType">
+    <xs:sequence>
+      <xs:element type="registrantType" name="registrant"/>
+      <xs:element type="independentRegistrantType" name="independentRegistrant"/>
+      <xs:element type="disciplinaryHistoryType" name="disciplinaryHistory"/>
+      <xs:element type="signatureType" name="signature"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:complexType name="edgarSubmissionType">
+    <xs:sequence>
+      <xs:element type="xs:string" name="schemaVersion"/>
+      <xs:element type="headerDataType" name="headerData"/>
+      <xs:element type="formDataType" name="formData"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
