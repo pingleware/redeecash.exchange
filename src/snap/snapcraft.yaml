@@ -1,0 +1,16 @@
+name: redeecash-exchange
+base: core20 
+version: '1.0.0'
+summary: Registered National Securities Exchange for Cryptocurrency Token Trading
+description: |
+  Redeecash Exchange is a SEC registered National Market System (NMS)
+  providing trading of exempt and non-exempt secuirty tokens
+  on the blockchain. This package is the linux server.
+
+grade: stable
+confinement: strict
+
+parts:
+  my-part:
+    # See 'snapcraft plugins'
+    plugin: nil

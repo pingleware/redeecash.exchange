@@ -124,6 +124,15 @@ async function firmRegistration(firmDetails) {
   }
 }
 
+async function getFirms() {
+  try {
+    const firms = await Firm.find({});
+    return { success: true, firms: firms };
+  } catch(error) {
+    return { success: false, message: 'Error registering user', error: error };
+  } 
+}
+
 async function exportCAT2JSON() {
   try {
     CAT.find().lean().exec((err, data) => {
@@ -280,6 +289,16 @@ async function addTransferAgentToToken(symbol,transferAgent) {
   }
 }
 
+function getTransferAgents() {
+  try {
+    const transferAgents = TransferAgent.find({});
+    console.log(transferAgents);
+    return transferAgents;
+  } catch(error) {
+    return {status: false, error: error};
+  }
+}
+
 /**
  * KYC Verification
  * 1. Code to handle KYC verification
@@ -342,23 +361,31 @@ async function performKYCVerification(userId, kycData) {
  */
 async function applyForTokenListing(tokenDetails) {
     try {
-      var token = new Token(JSON.parse(tokenDetails));
-      const status = await token.save();
-      console.error(status);
+      mongoose.connect('mongodb://localhost:27017/redeecashexchange', {
+        useNewUrlParser: true,
+        useUnifiedTopology: true,
+      });
+    
+      // Create the token model
+      Token = mongoose.model('Token', tokenSchema);
+      const token = JSON.parse(tokenDetails);
+      const _token = await Token.create(token);
+      const status = await  _token.save()  
       return { success: true, message: `listing applied successfully`, status: status };
+
     } catch (error) {
         return { success: false, message: 'Error applying for token listing', error: error };
     }
 }
 
-async function createTokenListing(poolContract,offeringType,secFileNumber,name,symbol,tokens,price,owner,ownerPrivateKey) {
+async function createTokenListing(tokenAddress,offeringType,secFileNumber,name,symbol,tokens,price,owner,ownerPrivateKey) {
   try {
-    const account = owner; // Replace with your Ethereum account address
-    const privateKey = ownerPrivateKey; // Replace with your account's private key
+    //const account = owner; // Replace with your Ethereum account address
+    //const privateKey = ownerPrivateKey; // Replace with your account's private key
 
-    const contract = new web3.eth.Contract(JSON.parse(poolABI), poolContract);
+    //const contract = new web3.eth.Contract(JSON.parse(poolABI), poolContract);
 
-    await contract.methods.createToken(name,symbol,tokens,price).call({from: account});
+    //await contract.methods.createToken(name,symbol,tokens,price).call({from: account});
     /*
     const txObject = contract.methods.createToken(name,symbol,tokens,price); // Replace with your contract's function name and arguments
     console.log(txObject)
@@ -381,15 +408,32 @@ async function createTokenListing(poolContract,offeringType,secFileNumber,name,s
     const receipt = await web3.eth.sendSignedTransaction(signedTx.rawTransaction);
     console.log(`receipt: ${receipt}`)
     */
-    const tokenAddress = await contract.methods.tokenContracts(symbol); 
+    //const tokenAddress = await contract.methods.tokenContracts(symbol); 
     console.log(`tokenAddress: ${tokenAddress}`)
-    const tokenDetails = {name: name, symbol: symbol, description: name, contractAddress: tokenAddress, abi: btoa(abi), secFileNumber: secFileNumber, secuortyType: offeringType};
-    const token = Token(tokenDetails);
-    const result = await  token.save();
-
-    return {status: true, receipt: receipt, token: token};
+    Token.findOneAndUpdate({symbol: symbol}, {$set: { contractAddress: tokenAddress}}, {new: true}, async (err, token) => {
+      if (err) {
+        const tokenDetails = {name: name, symbol: symbol, description: name, contractAddress: tokenAddress, abi: btoa(abi), secFileNumber: secFileNumber, securityType: offeringType};
+        const _token = Token(tokenDetails);
+        const result = await  _token.save();    
+        return {status: true, token: _token};
+      } else {
+        return {status: true, token: token};
+      }
+    })
   } catch (error) {
     console.error(error);
+    return {status: false, error: error};
+  }
+}
+
+/**
+ * Get all tokens
+ */
+function getTokens() {
+  try {
+    const _tokens = Token.find({});
+    return _tokens;
+  } catch(error) {
     return {status: false, error: error};
   }
 }
@@ -762,9 +806,11 @@ module.exports = {
     addUserToToken,
     registerTransferAgent,
     addTransferAgentToToken,
+    getTransferAgents,
     performKYCVerification,
     applyForTokenListing,
     createTokenListing,
+    getTokens,
     placeOrder,
     depositTokens,
     withdrawTokens,
@@ -774,5 +820,6 @@ module.exports = {
     handleCustomerSupportTicket,
     getTokenQuote,
     getOrderBook,
+    getFirms,
     exportCAT2JSON
 }

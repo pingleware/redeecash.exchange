@@ -25,13 +25,11 @@ const tokenSchema = new mongoose.Schema({
     },
     abi: {
       type: String,
-      require: true,
-      unique: true
+      require: false
     },
     secFileNumber: {
       type: String,
-      required: true,
-      unique: true
+      required: true
     },
     securityType: {
       type: String,

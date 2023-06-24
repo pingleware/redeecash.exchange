@@ -10,9 +10,11 @@ const {
     addUserToToken,
     registerTransferAgent,
     addTransferAgentToToken,
+    getTransferAgents,
     performKYCVerification,
     applyForTokenListing,
     createTokenListing,
+    getTokens,
     placeOrder,
     depositTokens,
     withdrawTokens,
@@ -21,7 +23,8 @@ const {
     runTests,
     handleCustomerSupportTicket,
     getTokenQuote,
-    getOrderBook
+    getOrderBook,
+    getFirms
 } = require("./api");
 
 
@@ -30,7 +33,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 /**
- * Registration
+ * Registration - Owner and Transfer Ageent Access
  */
 app.post('/register/user', (req, res) => {
   const { name, email, password, wallet, access} = req.body;
@@ -53,6 +56,16 @@ app.post('/register/transferAgent', (req, res) => {
   const status = registerTransferAgent(pool,token,name,email,password,wallet);
   console.log(status);
   res.json(status);
+})
+
+app.get('/transferagents', async (req, res) => {
+  const transferAgents = getTransferAgents();
+  res.json(transferAgents);
+})
+
+app.get('/firms', async (req, res) => {
+  const firms = await getFirms();
+  res.json(firms);
 })
 /**
  * Token
@@ -109,8 +122,12 @@ app.get('/orderbook', (req, res) => {
   const _orderbook = getOrderBook(symbol);
   res.json({_orderbook});
 })
-
-app.post('/placeOrder', (req, res) => {
+app.get('/tokens',async (req, res) => {
+    const tokens = await getTokens();
+    console.log(tokens);
+    res.json({status: true, tokens: tokens});  
+})
+app.post('/placeOrder', async function(req, res){
   const { userId, orderDetails } = req.body;
   const status = placeOrder(userId, JSON.parse(orderDetails));
   console.error(status);
@@ -133,7 +150,7 @@ app.post('/handleCustomerSupportTicket', (req, res) => {
   res.json(status);
 });
 /**
- * Symbol
+ * Listing Services - Owner Access
  */
 app.post('/symbol/new', (req, res) => {
   const {assetType,regulation,company} = req.body;
@@ -141,11 +158,10 @@ app.post('/symbol/new', (req, res) => {
   const symbol = generateSymbol(assetType, regulation, company);
   res.json({symbol});
 });
-app.post('/applyForTokenListing', (req, res) => {
+app.post('/applyForTokenListing', async (req, res) => {
   const { tokenDetails } = req.body;
-  const status = applyForTokenListing(tokenDetails);
-  console.log(status);
-  res.json({status: status});
+  const status = await applyForTokenListing(tokenDetails);
+  res.json(status);
 });
 app.post('/createTokenListing', (req, res) => {
   const {poolContract,offeringType,secFileNumber,name,symbol,tokens,price,owner,ownerPrivateKey} = req.body;
@@ -295,10 +311,17 @@ app.post('/quote/update', async (req,res) => {
   });
 })
 
+app.post('/mail', async (req, res) => {
+  const send = require('./mailer');
+
+  const results = await send({from: req.from, fromName: req.fromName},{to: req.to, toName: req.toName},req.subject,req.message);
+  res.json(results);
+})
+
 /**
  * Starting Server
  */
-const port = 3000;
+const port = 3000; 
 
 app.listen(port, () => {
   init();
