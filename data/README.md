@@ -4,7 +4,7 @@ The RedeeCash Exchange data has been relocated to [https://github.com/pingleware
 
 The reporting application to create XML report files or submission is located at [https://github.com/pingleware/redeecash.exchange.reporting](https://github.com/pingleware/redeecash.exchange.reporting)
 
-To submit your voluntary filings, begin 
+To submit your voluntary filings, begin
 
 1. fork the https://github.com/pingleware/redeecash.exchange.data
 2. clone your copy of the fork
@@ -106,13 +106,14 @@ The independent transfer agent, will use approveTransaction and transferFrom, wh
 
 The following offering pools, which is a contract that can create unllimited offerings of a specific type, are included with their contract address,
 
-1. OfferingRegAT1Pool at **0xcc9710a3FA4Db366276d550F3ddDDC1ABb32B036**
-2. Offering506bPool at **0x9A9f7a3f554A4D4eb68AbD74FCcB8b168e7299dD**
-3. Offering506cPool at **0x23fa49C1De609B9C4797E1E0FcfE9Ab2Da6e65b6**
-4. OfferingS1Pool at **0xfcD6B8Ee57d52f5Fc85cF1Fac66E33bA0E87B637**
-5. Spot Currency Order Book at **0x599aD94A656574a7DAEE33C104501a447dF6709f** [Token: RCDCRC-5C  Address: **0x50fF7fa753C23c433bF37B65772d991e576B8129****]**
-6. Oracle at **0x7e6EE5709CECec29d5c8Aa6F40ABDbdc9e1BA347**
-7. ConsolidateAuditTrail at **0x9605BDF98F75E49FC6a87aefCB39195e388A68d3**
+1. OfferingPool at **0x6344A028DC7eBD6739F9e51f1cd4148BeE8b2F12**
+2. OfferingRegAT1Pool at **0xcc9710a3FA4Db366276d550F3ddDDC1ABb32B036**
+3. Offering506bPool at **0x9A9f7a3f554A4D4eb68AbD74FCcB8b168e7299dD**
+4. Offering506cPool at **0x23fa49C1De609B9C4797E1E0FcfE9Ab2Da6e65b6**
+5. OfferingS1Pool at **0xfcD6B8Ee57d52f5Fc85cF1Fac66E33bA0E87B637**
+6. Spot Currency Order Book at **0x599aD94A656574a7DAEE33C104501a447dF6709f** [Token: RCDCRC-5C  Address: **0x50fF7fa753C23c433bF37B65772d991e576B8129****]**
+7. Oracle at **0x7e6EE5709CECec29d5c8Aa6F40ABDbdc9e1BA347**
+8. ConsolidateAuditTrail at **0x078e0912141Ad9BA298f420265f54026caeD60a3**
 
 ### Connectine with REMIX
 
