@@ -23,6 +23,7 @@ abstract contract BaseOffering is IERC20TOKEN {
     string public name;
     string public symbol;
     uint8  public decimals;
+    uint256 public price;
 
     uint256 public _totalSupply;
 
@@ -47,7 +48,7 @@ abstract contract BaseOffering is IERC20TOKEN {
 
     string[] jurisdictions;
 
-    event CreatedNewOffering(address owner,address issuer,string name,string symbol,uint256 tokens,address catAddress,bool exemptOffering);
+    event CreatedNewOffering(address owner,address issuer,string name,string symbol,uint256 tokens,uint256 price,address catAddress,bool exemptOffering);
     event UpdateDescription(address sender,string oldDescription,string newDescription);
     event ChangeRestrictedSecrity(address sender,bool value);
     event ChangeRule144Transfers(address sender,bool valule);
@@ -80,6 +81,10 @@ abstract contract BaseOffering is IERC20TOKEN {
         _;
     }
 
+    function isWhitelisted(address wallet) external view returns (bool) {
+        return whitelisted[wallet].active;
+    }
+
     function findJurisdiction(string memory jurisdiction) public view returns(bool) {
         bool found = false;
         for (uint i=0; i<jurisdictions.length; i++) {
@@ -90,11 +95,11 @@ abstract contract BaseOffering is IERC20TOKEN {
         return found;
     }
 
-    function getOwner() public view returns(address) {
+    function getOwner() external view returns(address) {
         return owner;
     }
 
-    function getIssuer() public view returns (address) {
+    function getIssuer() external view returns (address) {
         return issuer;
     }
 
@@ -157,7 +162,7 @@ abstract contract BaseOffering is IERC20TOKEN {
         return whitelisted[msg.sender].active;
     }
 
-    function checkTransferAgent() public view override returns (bool) {
+    function checkTransferAgent() external view override returns (bool) {
         return transfer_agents[msg.sender];
     }
 
@@ -253,10 +258,10 @@ abstract contract BaseOffering is IERC20TOKEN {
         emit UpdateRestrictedSecurity(msg.sender, oldValue, value);
     }
 
-    function setCUSIP(string memory cusip) virtual public;
-    function setSECFilenumber(string memory fileNumber) virtual public;
-    function setMaxOffering(uint256 value) virtual public;
-    function setMaxShares(uint256 value) virtual public;
+    function setCUSIP(string memory cusip) virtual external;
+    function setSECFilenumber(string memory fileNumber) virtual external;
+    function setMaxOffering(uint256 value) virtual external;
+    function setMaxShares(uint256 value) virtual external;
 
 
 }

@@ -34,6 +34,17 @@ contract ConsolidatedAuditTrail is IConsolidatedAuditTrail {
         _;
     }
 
+    function getTotalAuditTarils(string memory _symbol) external view returns (uint256) {
+        uint256 total = 0;
+
+        for (uint256 i=0; i < auditTrails.length; i++) {
+            if (compareStrings(auditTrails[i].symbol,_symbol)) {
+                total++;
+            }
+        }
+        return total;
+    }
+
     // Function to add an audit trail entry
     function addAuditTrail(address _owner, string calldata symbol,Transaction memory transaction, uint256 timestamp) external {
         require(_owner == owner,"not authorized");
