@@ -20,6 +20,7 @@ contract OfferingPool {
     address owner;
 
     event CreatedNewOffering(address owner,address issuer,string name,string symbol,uint256 tokens,address catAddress,bool exemptOffering);
+    event OfferingDeleted(string symbol);
     event AddedTransferAgent(address sender,address transferAgent);
     
 
@@ -48,6 +49,12 @@ contract OfferingPool {
         emit CreatedNewOffering(owner,_issuer,_name,_symbol,_tokens,_catContractAddress,_exemptOffering);
 
         return newToken;
+    }
+
+    function deleteToken(string calldata _symbol) external isOwner {
+        require(tokenContracts[_symbol].tokenAddress != address(0x0),"no token contract exists");
+        delete tokenContracts[_symbol];
+        emit OfferingDeleted(_symbol);
     }
 
     function addTransferAgent(string memory symbol,address transferAgent) external isOwner {

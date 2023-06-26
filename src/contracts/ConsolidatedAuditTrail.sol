@@ -21,7 +21,7 @@ import "./IConsolidatedAuditTrail.sol";
 
 contract ConsolidatedAuditTrail is IConsolidatedAuditTrail {
     // Array to store audit trail logs
-    AuditTrail[] public auditTrails;
+    mapping (string => AuditTrail[]) public auditTrails;
 
     address owner;
 
@@ -34,36 +34,16 @@ contract ConsolidatedAuditTrail is IConsolidatedAuditTrail {
         _;
     }
 
-    function getTotalAuditTarils(string memory _symbol) external view returns (uint256) {
-        uint256 total = 0;
-
-        for (uint256 i=0; i < auditTrails.length; i++) {
-            if (compareStrings(auditTrails[i].symbol,_symbol)) {
-                total++;
-            }
-        }
-        return total;
-    }
-
     // Function to add an audit trail entry
-    function addAuditTrail(address _owner, string calldata symbol,Transaction memory transaction, uint256 timestamp) external {
-        require(_owner == owner,"not authorized");
+    function addAuditTrail(string calldata symbol,Transaction memory transaction, uint256 timestamp) external {
         bytes32 hash = keccak256(abi.encodePacked(msg.sender, transaction.receiver, transaction.tokens, symbol, timestamp));
         AuditTrail memory trail = AuditTrail(msg.sender, hash, symbol, timestamp, transaction);
-        auditTrails.push(trail);
+        auditTrails[symbol].push(trail);
         emit AuditTrailAdded(msg.sender, hash, symbol, timestamp, transaction);
     }
 
     function getAuditTrailBySymbol(string memory _symbol) external view returns (AuditTrail[] memory) {
-        AuditTrail[] memory audit;
-        uint256 index = 0;
-        for (uint256 i=0; i < auditTrails.length; i++) {
-            if (compareStrings(auditTrails[i].symbol,_symbol)) {
-                AuditTrail memory _audit = AuditTrail(auditTrails[i].senderIMID,auditTrails[i].routedOrderID,auditTrails[i].symbol,auditTrails[i].eventTimestamp,auditTrails[i].session);
-                audit[index++] = _audit;
-            }
-        }
-        return audit;
+        return auditTrails[_symbol];
     }
 
     // internal functions
