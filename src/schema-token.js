@@ -23,9 +23,10 @@ const tokenSchema = new mongoose.Schema({
       required: true,
       unique: true,
     },
-    abi: {
+    orderBookAddress: {
       type: String,
-      require: false
+      required: true,
+      unique: true,
     },
     secFileNumber: {
       type: String,

@@ -232,7 +232,20 @@ async function addUserToToken(tokenAddress, userAddress) {
   return {status: true, message: 'investor added successfully'};
 }
 
-async function registerTransferAgent(poolContract,tokenAddress,name,email,password,wallet) {
+async function registerTransferAgent(name,email,password,wallet) {
+  try {
+    const transferAgent = new TransferAgent({ name, email, password, wallet });
+
+    // Save the user to the database
+    const status = await transferAgent.save();
+    console.log(status);
+    return { success: true, message: 'Transfer Agent registered successfully', status: status };
+  } catch (error) {
+    return { success: false, message: 'Error registering Transfer Agent ', error: error };
+  }
+}
+
+async function registerTransferAgentAndAssignToken(poolContract,tokenAddress,name,email,password,wallet) {
   try {
     // Validate email and password
     //if (!validateEmail(email)) {
@@ -805,6 +818,7 @@ module.exports = {
     registerUser,
     addUserToToken,
     registerTransferAgent,
+    registerTransferAgentAndAssignToken,
     addTransferAgentToToken,
     getTransferAgents,
     performKYCVerification,

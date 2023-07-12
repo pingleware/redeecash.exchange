@@ -53,38 +53,17 @@ class OrderBook {
     }
 
     // create a listing
-    static async createTokenListing(offertype,secFileNumber,name,symbol,tokens,price,ownerId) {
+    static async createTokenListing(poolContractAddress,tokenAddress,issuer,secFileNumber,name,symbol,tokens,price,ownerId) {
         const {
             poolABI,
             tokenABI
         } = require('./abi');
-        var contractAddress;
 
         try {
-            switch(offertype) {
-                case 'REGAT1':
-                    {
-                        contractAddress = "0x903a766aF1cE4662112DF8D1572aCD5dEA506b48";
-                    }
-                    break;
-                case '506B':
-                    {
-                        contractAddress = "0x3a4e3341C285F0d69a70d8baF610bCD8dEA55F86";
-                    }
-                    break;
-                case '506C':
-                    {
-                        contractAddress = "0x2640671f82aD2DC11A9F6128248532a1C3D72Bf2";
-                    }
-                    break;
-            }
-            const contract = new web3.eth.Contract(JSON.parse(poolABI), contractAddress);
-            await contract.methods.createToken(name,symbol,tokens,price).call({from: ownerId});
-            const tokenAddress = await contract.methods.tokenContracts(symbol); 
-            console.log(tokenAddress);
+            const contract = new web3.eth.Contract(JSON.parse(poolABI), poolContractAddress);
+            await contract.methods.assignToken(tokenAddress,issuer,name,symbol,tokens,price).call({from: ownerId});
             const tokenContract = new web3.eth.Contract(JSON.parse(tokenABI), tokenAddress);
-            await tokenContract.methods.setSECFilenumber(secFileNumber).call({from: ownerId});
-            return tokenAddress;    
+            return tokenContract;    
         } catch(error) {
             console.error(error);
         }
@@ -93,9 +72,9 @@ class OrderBook {
     // Add a buy order to the order book
     addBid(order) {
         mongoose.collection('Token').find({symbol: this.tokenSymbol},async function(err, token){
-            const contractAddress = token[0].contractAddress;
+            const tokenAddress = token[0].contractAddress;
             const abi = token[0].abi;
-            const contract = new web3.eth.Contract(abi, contractAddress);
+            const contract = new web3.eth.Contract(abi, tokenAddress);
 
             await contract.methods.requestBuy({tokens: order.volume, from: order.userId }).call({from: order.userId.wallet});
 
@@ -107,9 +86,9 @@ class OrderBook {
     // Add a sell order to the order book
     addAsk(order) {
         mongoose.collection('Token').find({symbol: this.tokenSymbol},async function(err, token){
-            const contractAddress = token[0].contractAddress;
+            const tokenAddress = token[0].contractAddress;
             const abi = token[0].abi;
-            const contract = new web3.eth.Contract(abi, contractAddress);
+            const contract = new web3.eth.Contract(abi, tokenAddress);
 
             await contract.methods.requestSell({tokens: order.volume, from: order.userId }).call({from: order.userId.wallet});
 
@@ -147,9 +126,9 @@ class OrderBook {
     // Match buy and sell orders and execute trades
     async matchOrders() {
         mongoose.collection('Token').find({symbol: this.tokenSymbol},async function(err, token){
-            const contractAddress = token[0].contractAddress;
+            const tokenAddress = token[0].contractAddress;
             const abi = token[0].abi;
-            const contract = new web3.eth.Contract(abi, contractAddress);
+            const contract = new web3.eth.Contract(abi, tokenAddress);
 
             while (this.bids[this.tokenSymbol].length > 0 && this.asks[this.tokenSymbol].length > 0) {
                 const highestBid = this.bids[this.tokenSymbol][0];
@@ -261,9 +240,9 @@ class OrderBook {
     async getTransactionByHash(txHash) {
         try {
             mongoose.collection('Token').find({symbol: this.tokenSymbol},async function(err, token){
-                const contractAddress = token[0].contractAddress;
+                const tokenAddress = token[0].contractAddress;
                 const abi = token[0].abi;
-                const contract = new web3.eth.Contract(abi, contractAddress);
+                const contract = new web3.eth.Contract(abi, tokenAddress);
                 const transaction = await contract.getTransaction(txHash);
                 return { status: true, transaction: transaction };
             });

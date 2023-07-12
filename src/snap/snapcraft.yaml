@@ -1,6 +1,6 @@
 name: redeecash-exchange
 base: core20 
-version: '1.0.0'
+version: '1.1.0'
 summary: Registered National Securities Exchange for Cryptocurrency Token Trading
 description: |
   Redeecash Exchange is a SEC registered National Market System (NMS)
