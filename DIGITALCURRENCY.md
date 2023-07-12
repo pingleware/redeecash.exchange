@@ -89,3 +89,25 @@ and checking the status of the sell order,
 ![1685648414547](image/DIGITALCURRENCY/1685648414547.png)
 
 ![1685648487678](image/DIGITALCURRENCY/1685648487678.png)
+
+# SEC Listed Tokens as Securities
+
+SOL (https://solana.com)
+
+ADA (https://cardano.org)
+
+MATIC (https://polygon.com), a token used on the polygon blockchain
+
+FIL (https://filecoin.io)
+
+ATOM (https://cosmos.network)
+
+SAND (https://www.sandbox.game/en/)
+
+MANA (https://decentraland.org)
+
+ALGO (https://algorand.com), a token for use on a specific blockchain
+
+AXS (https://www.kraken.com/learn/what-is-axie-infinity-axs), a game token
+
+COTI (https://coti.io), a token for use on a specific blockchain
