@@ -5,78 +5,12 @@ import "./IOffering.sol";
 import "./IConsolidatedAuditTrail.sol";
 
 contract Offering is IOffering {
-
     IConsolidatedAuditTrail catContract;
-
-    struct Order {
-        uint256 orderId;
-        address wallet;
-        uint256 quantity;
-        uint256 price;
-        uint256 paid;
-    }
-
-
-    Order[] public buyOrders;
-    Order[] public sellOrders;
-
-    uint256 public nextOrderId = 1;
-
-    uint256 public highestBid;
-    uint256 public lowestAsk;
-
-    struct Trade {
-        address buyer;
-        address seller;
-        address token;
-        uint amount;
-        bool isCompleted;
-    }
-
-    // Event emitted when a new buy order is placed
-    event BuyOrderPlaced(
-        string indexed currencyPair,
-        address indexed trader,
-        uint256 amount,
-        uint256 price
-    );
-
-    // Event emitted when a new sell order is placed
-    event SellOrderPlaced(
-        string indexed currencyPair,
-        address indexed trader,
-        uint256 amount,
-        uint256 price
-    );
-
-    // Event emitted when a trade is executed
-    event TradeExecuted(
-        string indexed currencyPair,
-        address indexed buyer,
-        address indexed seller,
-        uint256 amount,
-        uint256 price
-    );
-
-    bool public TRADING_ACTIVE=true;
-    bool public TRANSFERS_ACTIVE=true;
-    bool public MINTING_ACTIVE=true;
-    bool public BURNING_ACTIVE=true;
+    mapping (address => uint256) buyRequests;
 
     event ValueTransferred(address sender, uint256 amount);
-    event TradingSuspended(string reason);
-    event TradingResumed(string reason);
 
-    event TransfersSuspended(string reason);
-    event TransfersResumed(string reason);
-
-    event MintingSuspended(string reason);
-    event MintingResume(string reason);
-
-    event BurningSuspended(string reason);
-    event BurningResume(string reason);
-
-    constructor(address _owner, address _issuer, string memory _name,string memory _symbol, uint256 _tokens, uint256 _price, address _catContractAddress, bool _exemptOffering) {
+    constructor(address _owner, address _issuer, string memory _name,string memory _symbol, uint256 _tokens, uint256 _price, address _catContractAddress, bool _exemptOffering,address _poolContract) {
         name = _name;
         symbol = _symbol; // Maximum 11 characters
         decimals = 0;
@@ -86,13 +20,14 @@ contract Offering is IOffering {
         MAX_OFFERING_SHARES = _tokens;
         // Give the issuer the total supply and authorize as a transfer agent
         issuer = _issuer;
-        whitelisted[issuer] = INVESTOR_struct(issuer,true,string("all"),9);
+        whitelisted[issuer] = INVESTOR(issuer,true,string("all"),9);
         balances[issuer] = _totalSupply;
         transfer_agents[issuer] = true;
         _transfer_agents.push(issuer);
         price =  _price;
 
         catContract = IConsolidatedAuditTrail(_catContractAddress);
+        poolContract = IOfferingPool(_poolContract);
 
         jurisdictions.push(string("all"));
 
@@ -107,12 +42,58 @@ contract Offering is IOffering {
         emit ValueTransferred(msg.sender, msg.value);
     }
 
+    function isFirstYearSecondaryTradingRestricted(uint256 usdAmount) view internal {
+        if (SECONDARY_SALES_FIRST_YEAR_RESTRICTION) {
+            if (block.timestamp > transfer_log[msg.sender] + YEAR) {
+                uint256 threshold = (price * AGGREGATE_OFFERING_PRICE_PERCENT) / 100; // Calculate 30% of the original price
+                require(usdAmount <= threshold,"new offering price exceeds 30% of token price in the first year of secondary trading");
+            }
+        }
+    }
+
+    function requestToBuy(uint256 value) override external isParticipant {
+        require(value > 0, "requested amount must be greater than zero");
+        request_to_buy[msg.sender] = request_to_buy[msg.sender] + value;
+        new_requests.push(msg.sender);
+    }
+
+    function deposit() external payable {
+        require(msg.value > 0, "Deposit amount must be greater than 0");
+        payable(address(this)).transfer(msg.value); // msg.value in Wei
+        emit Deposited(msg.sender,msg.value);
+    }
+
+
+    function withdraw(address recipient, uint256 amount) external payable isOwner {
+        require(address(this).balance >= amount, "Insufficient contract balance");
+        payable(recipient).transfer(amount);  // amount in Wei, e.g. catContract.usdToWei(500) = 267809319764327798 = amount
+        emit Withdrawn(recipient,amount);
+    }
+
+    // Function to transfer ownership to a new address
+    function transferOwnership(address newOwner) external isOwner {
+        require(newOwner != address(0), "Invalid address");
+        owner = newOwner;
+    }
 
     function getMaxOffering() public view override returns(uint256) {
         return MAX_OFFERING;
     }
 
-    function changeTradingStatus(bool status, string calldata reason) external isOwner {
+    function getTradingStatus() override external view returns (bool) {
+        return TRADING_ACTIVE;
+    }
+    function getTransferStatus() override external view returns (bool) {
+        return TRANSFERS_ACTIVE;
+    } 
+    function getMintingStatus() override external view returns (bool) {
+        return MINTING_ACTIVE;
+    }
+    function getBuringStatus() override external view returns (bool) {
+        return BURNING_ACTIVE;
+    }
+
+    function changeTradingStatus(bool status, string calldata reason) override external isOwner {
         TRADING_ACTIVE = status;
         if (status) {
             emit TradingResumed(reason);
@@ -120,7 +101,7 @@ contract Offering is IOffering {
             emit TradingSuspended(reason);
         }
     }
-    function changeTransferStatus(bool status, string calldata reason) external isOwner {
+    function changeTransferStatus(bool status, string calldata reason) override external isOwner {
         TRANSFERS_ACTIVE = status;
         if (status) {
             emit TransfersResumed(reason);
@@ -128,7 +109,7 @@ contract Offering is IOffering {
             emit TransfersSuspended(reason);
         }
     }
-    function changeMintingStatus(bool status, string calldata reason) external isOwner {
+    function changeMintingStatus(bool status, string calldata reason) override external isOwner {
         MINTING_ACTIVE = status;
         if (status) {
             emit MintingResume(reason);
@@ -136,13 +117,33 @@ contract Offering is IOffering {
             emit MintingSuspended(reason);
         }
     }
-    function changeBurningStatus(bool status, string calldata reason) external isOwner {
+    function changeBurningStatus(bool status, string calldata reason) override external isOwner {
         BURNING_ACTIVE = status;
         if (status) {
             emit BurningResume(reason);
         } else {
             emit BurningSuspended(reason);
         }
+    }
+
+    /**
+     * 1. An investor makes an on-chain purchase requqest using investorBuyRequest, which transfers the investors monies to the contract balance
+     * 2. The transfer agent, approves the allowed amount
+     * 3. The issuer will transfer the allowed tokens to the investor as well as transfer from the contract balance to the issuer wallet
+     *
+     * The investor can still purchase additional tokens offchain, and the issuer will transfer tokens using the transfer function.
+     */
+    function transferOnChainPurchase(address to, uint tokens) external isIssuer {
+        uint256 usdAmount = SafeMath.safeMul(price,tokens);
+        uint256 ethAmount = catContract.usdToWei(usdAmount);
+        require (address(this).balance > ethAmount,"insufficient contract balance");
+
+        payable(address(issuer)).transfer(ethAmount);
+        transfer(to,tokens);
+    }
+
+    function getContractBalance() external view returns (uint256) {
+        return address(this).balance;
     }
 
 
@@ -163,15 +164,35 @@ contract Offering is IOffering {
         }
         transfer_log[to] = block.timestamp;
         balances[msg.sender] = SafeMath.safeSub(balances[msg.sender], tokens);
+        allowed[msg.sender][to] = SafeMath.safeSub(allowed[msg.sender][to], tokens);
         balances[to] = SafeMath.safeAdd(balances[to], tokens);
         if (transfer_agents[msg.sender]) {
             OUTSTANDING_SHARES = SafeMath.safeAdd(OUTSTANDING_SHARES, tokens);
         }
         emit Transfer(msg.sender, to, tokens);
         // save CAT
-        IConsolidatedAuditTrail.Transaction memory transaction = IConsolidatedAuditTrail.Transaction(msg.sender,to,tokens);
-        catContract.addAuditTrail(owner,symbol,transaction,block.timestamp);
+        string memory eventData = ""; //msg.sender.concat(string(" transferred ").concat(tokens.concat(string(" to ").concat(to))));
+        catContract.addAuditEntry(symbol,timestampToString(),"Transfer Token",eventData);
         return true;
+    }
+
+    function timestampToString() internal view returns (string memory) {
+        uint256 timestamp = block.timestamp;
+        uint256 maxLength = 20; // Maximum length of the string (adjust as needed)
+        bytes memory buffer = new bytes(maxLength);
+        uint256 i = maxLength - 1;
+        
+        while (timestamp > 0) {
+            buffer[i--] = bytes1(uint8(48 + timestamp % 10)); // Convert digit to ASCII
+            timestamp /= 10;
+        }
+        
+        bytes memory result = new bytes(maxLength - i - 1);
+        for (uint256 j = i + 1; j < maxLength; j++) {
+            result[j - i - 1] = buffer[j];
+        }
+        
+        return string(result);
     }
     
     /**
@@ -202,8 +223,8 @@ contract Offering is IOffering {
         emit Transfer(from, to, tokens);
 
         // save CAT
-        IConsolidatedAuditTrail.Transaction memory transaction = IConsolidatedAuditTrail.Transaction(from,to,tokens);
-        catContract.addAuditTrail(owner,symbol,transaction,block.timestamp);
+        string memory eventData = ""; //from.toSlice() + string(" transferred ") + tokens.toSlice() + string(" to ") + to.toSlice();
+        catContract.addAuditEntry(symbol,timestampToString(),"Transfer Token",eventData);
 
         return true;
     }
@@ -223,8 +244,9 @@ contract Offering is IOffering {
         emit Transfer(address(0), msg.sender, _amount);
 
         // save CAT
-        IConsolidatedAuditTrail.Transaction memory transaction = IConsolidatedAuditTrail.Transaction(address(0),msg.sender,_amount);
-        catContract.addAuditTrail(owner,symbol,transaction,block.timestamp);
+        string memory eventData = ""; //msg.sender.toSlice() + string(" minted(created) ") + _amount.toSlice() + string(" tokens ");
+        catContract.addAuditEntry(symbol,timestampToString(),"Transfer Token",eventData);
+
         return true;
     }
     
@@ -242,149 +264,20 @@ contract Offering is IOffering {
         emit Transfer(msg.sender, address(0), _amount);
 
         // save CAT
-        IConsolidatedAuditTrail.Transaction memory transaction = IConsolidatedAuditTrail.Transaction(msg.sender,address(0),_amount);
-        catContract.addAuditTrail(owner,symbol,transaction,block.timestamp);
+        string memory eventData = ""; //msg.sender.toSlice() + string(" burned(removed) ") + _amount.toSlice() + string(" tokens ");
+        catContract.addAuditEntry(symbol,timestampToString(),"Transfer Token",eventData);
+
         return true;
     }
-        // Function to update the highest bid and lowest ask prices
-    function updateQuoting() internal {    
-        uint256 i = 0;
-        uint256 j = 0;
 
-        highestBid = buyOrders[0].price;
-        for (i=1; i<buyOrders.length; i++) {
-            if (buyOrders[i].price > highestBid) {
-                highestBid = buyOrders[i].price;
-            }
-        }
-
-        lowestAsk = sellOrders[0].price;
-        for(j=1;j<sellOrders.length;j++) {
-            if (sellOrders[j].price < lowestAsk) {
-                lowestAsk = sellOrders[j].price;
-            }
-        }
+    function investorBuyRequest(uint256 tokens) external payable isAuthorized {
+        uint256 usdAmount = catContract.weiToUSD(msg.value) + 1;
+        isFirstYearSecondaryTradingRestricted(usdAmount);
+        require(usdAmount >= SafeMath.safeMul(price,tokens),"insufficient monies to buy");
+        buyRequests[msg.sender] = SafeMath.safeAdd(buyRequests[msg.sender],tokens);
     }
-    // Function to match buy and sell orders
-    function matchOrders() internal {
-        if (buyOrders.length == 0 || sellOrders.length == 0) {
-            return;
-        }
-
-        uint256 i = 0;
-        uint256 j = 0;
-
-        while (i < buyOrders.length && j < sellOrders.length) {
-            Order memory buyOrder = buyOrders[i];
-            Order memory sellOrder = sellOrders[j];
-
-            if (buyOrder.price >= sellOrder.price) {
-                uint256 tradeAmount = (buyOrder.quantity <= sellOrder.quantity)
-                    ? buyOrder.quantity
-                    : sellOrder.quantity;
-                uint256 tradePrice = sellOrder.price;
-
-                emit TradeExecuted(
-                    symbol,
-                    buyOrder.wallet,
-                    sellOrder.wallet,
-                    tradeAmount,
-                    tradePrice
-                );
-
-                // transfer the tokens on the contract
-                updateTransferAllocation(issuer,sellOrder.wallet,tradeAmount);
-                updateTransferAllocation(issuer,buyOrder.wallet,tradeAmount);
-                transferFrom(sellOrder.wallet,buyOrder.wallet,tradeAmount);
-
-
-                // Update order amounts and remove filled orders
-                if (buyOrder.quantity <= sellOrder.quantity) {
-                    sellOrders[j].quantity -= buyOrder.quantity;
-                    delete buyOrders[i];
-                    i++;
-                } else {
-                    buyOrders[i].quantity -= sellOrder.quantity;
-                    delete sellOrders[j];
-                    j++;
-                }
-            } else {
-                break;
-            }
-        }
-    }
-    // Function to get quote
-    function quote()
-        external
-        view
-        returns (uint256, uint256)
-    {
-        return (highestBid,lowestAsk);
-    }
-    // Function to place a buy order
-    function buy(
-        uint256 quantity,
-        uint256 price
-    ) external payable {
-        require(TRADING_ACTIVE,"trading has been suspended");
-        require(quantity > 0 && price > 0, "Invalid amount and/or price");
-        require(msg.value > SafeMath.safeMul(quantity, price),"insufficient funds to place buy order");
-        require(OUTSTANDING_SHARES == _totalSupply,"trading disabled until initial offering has been completed");
-
-        // Storing the buy order details
-        Order memory order = Order(nextOrderId, msg.sender, quantity, price, msg.value);
-        buyOrders[nextOrderId] = order;
-        nextOrderId++;
-
-        emit BuyOrderPlaced(symbol, msg.sender, quantity, price);
-
-        updateQuoting();
-        matchOrders();
-    }
-    // Function to cancel and transfer contract balance to the caller, and remove the buy order
-    function cancelBuy(uint256 orderId) external {
-        uint256 contractBalance = address(this).balance;
-        require(contractBalance > 0, "Contract has no balance.");
-
-        Order storage order = buyOrders[orderId];
-        require(order.wallet == msg.sender, "You are not the owner of this order.");
-
-        uint256 refund = order.paid;
-
-        delete buyOrders[orderId];
-
-        payable(msg.sender).transfer(refund);
-        emit ValueTransferred(msg.sender, refund);
-    }
-    // Function to place a sell order
-    function sell(
-        uint256 quantity,
-        uint256 price
-    ) external {
-        require(TRADING_ACTIVE,"trading has been suspended");
-        require(quantity > 0, "Invalid amount");
-        require(price > 0, "Invalid price");
-        require(quantity > 0 && price > 0, "Invalid amount and/or price");
-        require(OUTSTANDING_SHARES == _totalSupply,"trading disabled until initial offering has been completed");
-        require(getBalanceFrom(msg.sender) >= quantity,"insufficient balance in sellers account");
-
-        Order memory order = Order(nextOrderId, msg.sender, quantity, price, 0);
-        sellOrders[nextOrderId] = order;
-        nextOrderId++;
-
-        emit SellOrderPlaced(symbol, msg.sender, quantity, price);
-
-        updateQuoting();
-        matchOrders();
-    }
-    // Cancel pending sell order
-    function cancelSell(uint256 orderId) external {
-        Order storage order = sellOrders[orderId];
-        require(order.wallet == msg.sender, "You are not the owner of this order.");
-        delete sellOrders[orderId];
-    }
-    function getOrders() external view returns(Order[] memory,Order[] memory) {
-        return(buyOrders,sellOrders);
+    function getInvestorBuyRequest(address wallet) external view isTransferAgent returns (uint256) {
+        return buyRequests[wallet];
     }
 
     function setDESCRIPTION(string memory description) public isTransferAgent {
@@ -421,4 +314,14 @@ contract Offering is IOffering {
         MAX_OFFERING_SHARES = value;
         emit UpdateMaxShares(msg.sender,MAX_OFFERING_SHARES,oldMaxShares);
     }
+    function setAggregateOfferingPricePercentage(uint256 percentage) override external isTransferAgent {
+        uint256 oldAggregateOfferingPrice = AGGREGATE_OFFERING_PRICE_PERCENT;
+        AGGREGATE_OFFERING_PRICE_PERCENT = percentage;
+        emit AggregateOfferingPriceChange(msg.sender,oldAggregateOfferingPrice,percentage);
+    }
+    function setFirstYearSecondarySalesLimitation(bool status,string memory reason) override external isTransferAgent {
+        SECONDARY_SALES_FIRST_YEAR_RESTRICTION = status;
+        emit OverrideFirstYearSecondarySalesLimitation(msg.sender,status,reason);
+    }
+
 }

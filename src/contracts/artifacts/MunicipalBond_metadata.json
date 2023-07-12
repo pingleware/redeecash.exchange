@@ -1,0 +1,608 @@
+{
+	"compiler": {
+		"version": "0.8.18+commit.87f61d96"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "_bondName",
+						"type": "string"
+					},
+					{
+						"internalType": "address",
+						"name": "_issuer",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "_issuerWallet",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_totalPrincipal",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_interestRate",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_maturityDate",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "_restricted",
+						"type": "bool"
+					},
+					{
+						"internalType": "uint256",
+						"name": "_maxBondUnits",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"anonymous": false,
+				"inputs": [],
+				"name": "BondMatured",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "seller",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "bondUnits",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "price",
+						"type": "uint256"
+					}
+				],
+				"name": "BondQuoteAdded",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "seller",
+						"type": "address"
+					}
+				],
+				"name": "BondQuoteRemoved",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "seller",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "bondUnits",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "price",
+						"type": "uint256"
+					}
+				],
+				"name": "BondTradeAdded",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "buyer",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "seller",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "bondUnits",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "price",
+						"type": "uint256"
+					}
+				],
+				"name": "BondTradeExecuted",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "from",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "to",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "value",
+						"type": "uint256"
+					}
+				],
+				"name": "Transfer",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "bondUnits",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "price",
+						"type": "uint256"
+					}
+				],
+				"name": "addBondTrade",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "bondName",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "bondQuotes",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "seller",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "bondUnits",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "price",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "active",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "buy",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "catAddress",
+				"outputs": [
+					{
+						"internalType": "contract IConsolidatedAuditTrail",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "depositBalance",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "seller",
+						"type": "address"
+					}
+				],
+				"name": "getBondQuote",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "bondUnits",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "price",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "active",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getTotalBondUnits",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "interestRate",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "investorQuotes",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"name": "investors",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "principal",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "interestEarned",
+						"type": "uint256"
+					},
+					{
+						"internalType": "bool",
+						"name": "redeemed",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "isMatured",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "issuer",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "issuerWallet",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "maturityDate",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "maxBondUnits",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "poolAddress",
+				"outputs": [
+					{
+						"internalType": "contract IOfferingPool",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "bondUnits",
+						"type": "uint256"
+					}
+				],
+				"name": "quoteBondUnits",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "removeBondQuote",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "restricted",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_catContract",
+						"type": "address"
+					}
+				],
+				"name": "setConsolidateAuditTrailContract",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "_poolContract",
+						"type": "address"
+					}
+				],
+				"name": "setOfferingPoolContract",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "totalPrincipal",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/MunicipalBond.sol": "MunicipalBond"
+		},
+		"evmVersion": "paris",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/IBaseOffering.sol": {
+			"keccak256": "0x8d5923e66477cff3c9f9e530a966c2f30429de1168bee3dd4795417d19fb13df",
+			"license": "CC-BY-4.0",
+			"urls": [
+				"bzz-raw://345fee35a837f2f2ec3f9ec2b8bb70f39c032f75a5a38e7eb61ea4925ca20614",
+				"dweb:/ipfs/QmeqMRPQ8FEyRie63ujYxS4KQBYXm6zbcSa9g4MB78QrpS"
+			]
+		},
+		"contracts/IConsolidatedAuditTrail.sol": {
+			"keccak256": "0x6730e364f9d150a2cc02dbd239bf8e83c86b43bd9f17dd472a6a7a53200967c5",
+			"license": "CC-BY-4.0",
+			"urls": [
+				"bzz-raw://53f5f4bd6e00d4c1d8dcb6e76ccd68368f1f995a31903f3ed8ce744fc752ce49",
+				"dweb:/ipfs/QmRQQV4otU5c2Xvzaf9YaJA6bUZLk7SdSce81xqifq4yZx"
+			]
+		},
+		"contracts/IERC20TOKEN.sol": {
+			"keccak256": "0xf43d3de878943f8ca41aa6b5d9a75143dce8ead65374b7cbeda4629fa2e5c862",
+			"license": "CC-BY-4.0",
+			"urls": [
+				"bzz-raw://860cf35a2fa42cdee8226e333f9dffaad5f2fa70d644a5a68e9ac61813e76b57",
+				"dweb:/ipfs/QmPdyytaQLDatAkErwnCy3JuH7tVecXD3vWnrWCF3qt2ym"
+			]
+		},
+		"contracts/IOfferingPool.sol": {
+			"keccak256": "0x99d56e458a09bca2e139d7f1a2a9f4f751d42091ddd909329b4d4b003bacd867",
+			"license": "CC-BY-4.0",
+			"urls": [
+				"bzz-raw://39069c6db5d27f20df4dbb0d95e295c3021eedb020fe531f3068ea676281f7b5",
+				"dweb:/ipfs/QmNUdeW8crNq7ZDEd34bTkN9KJqXtKVwu7HzptSQoFywuF"
+			]
+		},
+		"contracts/MunicipalBond.sol": {
+			"keccak256": "0xb5b9801c8efef8190e38f87eaff21d714a75314c7ed860fa7399ed34994945e8",
+			"license": "CC-BY-4.0",
+			"urls": [
+				"bzz-raw://f539c303156046c82caba3a93faf2e4be59c5e1da293635a22317e8043921e46",
+				"dweb:/ipfs/QmTBQBKxT9rqgZbtWnNQ17bU6AA9XzTUbfAiGnRGhhUvXw"
+			]
+		},
+		"contracts/SafeMath.sol": {
+			"keccak256": "0x63cda6c69b0d6281f0db8bc8aba5e1c824292b4714b960f381ad2c819d9b18bb",
+			"license": "CC-BY-4.0",
+			"urls": [
+				"bzz-raw://e1143563414c4e7de8662553d5bc2f481f7a7a24fc07678a0cbde5e6fd49faf8",
+				"dweb:/ipfs/QmaMGq3S7bbd53ybYs5qWy73AzQ23hZ2Eyq4hzNKSyij84"
+			]
+		}
+	},
+	"version": 1
+}

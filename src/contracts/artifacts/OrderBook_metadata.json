@@ -1,0 +1,510 @@
+{
+	"compiler": {
+		"version": "0.8.18+commit.87f61d96"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [
+					{
+						"internalType": "address",
+						"name": "owner",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "offeringContractAddress",
+						"type": "address"
+					},
+					{
+						"internalType": "address",
+						"name": "catContractAddress",
+						"type": "address"
+					}
+				],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "string",
+						"name": "currencyPair",
+						"type": "string"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "trader",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "price",
+						"type": "uint256"
+					}
+				],
+				"name": "BuyOrderPlaced",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "string",
+						"name": "currencyPair",
+						"type": "string"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "trader",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "price",
+						"type": "uint256"
+					}
+				],
+				"name": "SellOrderPlaced",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"internalType": "string",
+						"name": "currencyPair",
+						"type": "string"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "buyer",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "seller",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "price",
+						"type": "uint256"
+					}
+				],
+				"name": "TradeExecuted",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "amount",
+						"type": "uint256"
+					}
+				],
+				"name": "ValueTransferred",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "quantity",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "price",
+						"type": "uint256"
+					}
+				],
+				"name": "buy",
+				"outputs": [],
+				"stateMutability": "payable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "buyOrders",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "orderId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "wallet",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "quantity",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "price",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "paid",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "orderId",
+						"type": "uint256"
+					}
+				],
+				"name": "cancelBuy",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "orderId",
+						"type": "uint256"
+					}
+				],
+				"name": "cancelSell",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getOrders",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "orderId",
+								"type": "uint256"
+							},
+							{
+								"internalType": "address",
+								"name": "wallet",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "quantity",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "price",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "paid",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct OrderBook.Order[]",
+						"name": "",
+						"type": "tuple[]"
+					},
+					{
+						"components": [
+							{
+								"internalType": "uint256",
+								"name": "orderId",
+								"type": "uint256"
+							},
+							{
+								"internalType": "address",
+								"name": "wallet",
+								"type": "address"
+							},
+							{
+								"internalType": "uint256",
+								"name": "quantity",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "price",
+								"type": "uint256"
+							},
+							{
+								"internalType": "uint256",
+								"name": "paid",
+								"type": "uint256"
+							}
+						],
+						"internalType": "struct OrderBook.Order[]",
+						"name": "",
+						"type": "tuple[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "highestBid",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "lowestAsk",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "nextOrderId",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "quote",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "quantity",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "price",
+						"type": "uint256"
+					}
+				],
+				"name": "sell",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "sellOrders",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "orderId",
+						"type": "uint256"
+					},
+					{
+						"internalType": "address",
+						"name": "wallet",
+						"type": "address"
+					},
+					{
+						"internalType": "uint256",
+						"name": "quantity",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "price",
+						"type": "uint256"
+					},
+					{
+						"internalType": "uint256",
+						"name": "paid",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/OrderBook.sol": "OrderBook"
+		},
+		"evmVersion": "paris",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/BaseOffering.sol": {
+			"keccak256": "0xa7b7460cbfce61b437dc6f218cac1de0de804b664e83145dc8202e16739d64e5",
+			"license": "CC-BY-4.0",
+			"urls": [
+				"bzz-raw://be04a6dbf10af3de8c0aaf288fb12654703c379432622fdd6f48ec70a1bea5a1",
+				"dweb:/ipfs/QmcTMZmbcg9F2S61W9aJ4uNMzsvec9jSJyyL3sH5dZbMkZ"
+			]
+		},
+		"contracts/IBaseOffering.sol": {
+			"keccak256": "0xde771173f49bd7144f4ad4291348b41c4d7f24a271ec8ade476d651482910ff2",
+			"license": "CC-BY-4.0",
+			"urls": [
+				"bzz-raw://e9ee3eb9ca5b1a2a482422e3aff34107f0681b326eb51202700819753995e2ed",
+				"dweb:/ipfs/QmPahgardcCCA8b2VGgUmWAABF1MAPjKYStd8qjSzaRuRb"
+			]
+		},
+		"contracts/IConsolidatedAuditTrail.sol": {
+			"keccak256": "0x6730e364f9d150a2cc02dbd239bf8e83c86b43bd9f17dd472a6a7a53200967c5",
+			"license": "CC-BY-4.0",
+			"urls": [
+				"bzz-raw://53f5f4bd6e00d4c1d8dcb6e76ccd68368f1f995a31903f3ed8ce744fc752ce49",
+				"dweb:/ipfs/QmRQQV4otU5c2Xvzaf9YaJA6bUZLk7SdSce81xqifq4yZx"
+			]
+		},
+		"contracts/IERC20TOKEN.sol": {
+			"keccak256": "0xf43d3de878943f8ca41aa6b5d9a75143dce8ead65374b7cbeda4629fa2e5c862",
+			"license": "CC-BY-4.0",
+			"urls": [
+				"bzz-raw://860cf35a2fa42cdee8226e333f9dffaad5f2fa70d644a5a68e9ac61813e76b57",
+				"dweb:/ipfs/QmPdyytaQLDatAkErwnCy3JuH7tVecXD3vWnrWCF3qt2ym"
+			]
+		},
+		"contracts/IOffering.sol": {
+			"keccak256": "0xc4934c029a907bb0b9447c7fad0ec0fd7f861a0da1a20c802793e7167f9f7e14",
+			"license": "CC-BY-4.0",
+			"urls": [
+				"bzz-raw://c6b834fa44aea69e227e01e98e8f2e0dbb06422f013f7ae6051018ce4b964b7c",
+				"dweb:/ipfs/QmaT3HN1nt2N53te1GDsXMeTkHURGCFHjYaPfwfsQHMdPk"
+			]
+		},
+		"contracts/IOfferingPool.sol": {
+			"keccak256": "0x99d56e458a09bca2e139d7f1a2a9f4f751d42091ddd909329b4d4b003bacd867",
+			"license": "CC-BY-4.0",
+			"urls": [
+				"bzz-raw://39069c6db5d27f20df4dbb0d95e295c3021eedb020fe531f3068ea676281f7b5",
+				"dweb:/ipfs/QmNUdeW8crNq7ZDEd34bTkN9KJqXtKVwu7HzptSQoFywuF"
+			]
+		},
+		"contracts/OrderBook.sol": {
+			"keccak256": "0x3c04fb8490c5ea841a334b08739d23a547022389f57e32f09b35a9dd72b97c2e",
+			"license": "CC-BY-4.0",
+			"urls": [
+				"bzz-raw://791e8056ea13d3768bd071f4088c97c3cb4e64140ea96979c685b63a6e94f8af",
+				"dweb:/ipfs/QmSiXnX5wNRm6LLCmQjhgAu7m7B6TUQLBKhbzmSfTfQcbh"
+			]
+		},
+		"contracts/SafeMath.sol": {
+			"keccak256": "0x63cda6c69b0d6281f0db8bc8aba5e1c824292b4714b960f381ad2c819d9b18bb",
+			"license": "CC-BY-4.0",
+			"urls": [
+				"bzz-raw://e1143563414c4e7de8662553d5bc2f481f7a7a24fc07678a0cbde5e6fd49faf8",
+				"dweb:/ipfs/QmaMGq3S7bbd53ybYs5qWy73AzQ23hZ2Eyq4hzNKSyij84"
+			]
+		}
+	},
+	"version": 1
+}

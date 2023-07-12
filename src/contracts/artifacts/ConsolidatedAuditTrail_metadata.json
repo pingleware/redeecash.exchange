@@ -1,0 +1,380 @@
+{
+	"compiler": {
+		"version": "0.8.18+commit.87f61d96"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"inputs": [],
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "symbol",
+						"type": "string"
+					},
+					{
+						"indexed": true,
+						"internalType": "bytes32",
+						"name": "uti",
+						"type": "bytes32"
+					},
+					{
+						"indexed": true,
+						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"internalType": "uint256",
+						"name": "timestamp",
+						"type": "uint256"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "eventType",
+						"type": "string"
+					},
+					{
+						"indexed": false,
+						"internalType": "string",
+						"name": "eventData",
+						"type": "string"
+					}
+				],
+				"name": "AuditEntryAdded",
+				"type": "event"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "symbol",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "eventDetail",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "eventType",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "eventData",
+						"type": "string"
+					}
+				],
+				"name": "addAuditEntry",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "auditTrail",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "sender",
+						"type": "address"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "routedOrderID",
+						"type": "bytes32"
+					},
+					{
+						"internalType": "uint256",
+						"name": "timestamp",
+						"type": "uint256"
+					},
+					{
+						"internalType": "string",
+						"name": "symbol",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "eventType",
+						"type": "string"
+					},
+					{
+						"internalType": "string",
+						"name": "eventData",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "exchangeRate",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "symbol",
+						"type": "string"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "uti",
+						"type": "bytes32"
+					}
+				],
+				"name": "getAuditTrail",
+				"outputs": [
+					{
+						"components": [
+							{
+								"internalType": "address",
+								"name": "sender",
+								"type": "address"
+							},
+							{
+								"internalType": "bytes32",
+								"name": "routedOrderID",
+								"type": "bytes32"
+							},
+							{
+								"internalType": "uint256",
+								"name": "timestamp",
+								"type": "uint256"
+							},
+							{
+								"internalType": "string",
+								"name": "symbol",
+								"type": "string"
+							},
+							{
+								"internalType": "string",
+								"name": "eventType",
+								"type": "string"
+							},
+							{
+								"internalType": "string",
+								"name": "eventData",
+								"type": "string"
+							}
+						],
+						"internalType": "struct IConsolidatedAuditTrail.AuditEntry[]",
+						"name": "",
+						"type": "tuple[]"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getExchangeRate",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"name": "getOwner",
+				"outputs": [
+					{
+						"internalType": "address",
+						"name": "",
+						"type": "address"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "newRate",
+						"type": "uint256"
+					}
+				],
+				"name": "setExchangeRate",
+				"outputs": [],
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "usdAmount",
+						"type": "uint256"
+					}
+				],
+				"name": "usdToEth",
+				"outputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "usdAmount",
+						"type": "uint256"
+					}
+				],
+				"name": "usdToWei",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "string",
+						"name": "",
+						"type": "string"
+					},
+					{
+						"internalType": "bytes32",
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"name": "utiExists",
+				"outputs": [
+					{
+						"internalType": "bool",
+						"name": "",
+						"type": "bool"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"internalType": "uint256",
+						"name": "weiAmount",
+						"type": "uint256"
+					}
+				],
+				"name": "weiToUSD",
+				"outputs": [
+					{
+						"internalType": "uint256",
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"stateMutability": "view",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"kind": "dev",
+			"methods": {},
+			"version": 1
+		},
+		"userdoc": {
+			"kind": "user",
+			"methods": {
+				"addAuditEntry(string,string,string,string)": {
+					"notice": "Trade Execution: When a trade occurs on the decentralized exchange, the financial institution calls the addAuditEntry function of the CAT contract,  passing the necessary trade details, such as the trade ID, transaction details, and involved parties.  For example:      catContract.addAuditEntry(\"PEIKX-A1\", \"TRADE123\", \"Trade Execution\", \"Buy 10 ETH at $2000 from Address A\"); eventDetail in the following format:  {      \"tradeId\": \"TRADE123\",      \"transactionHash\": \"0x7634baeeae9a8487671906e5a60d2845974b8bfd6285ac7525ed7f5b71f090db\",      \"assetSymbol\": \"PEIKX-A1\",      \"assetContractAddress\": \"0x429Fd2E795b3C8f51b5ea08255EAB8C31Db955df\",      \"quantity\": 10,      \"buyer\": \"0x490e7f14f80807df3f814331D48103BEC8eD03bf\",      \"seller\": \"0x9F30e3755035dcaf201b2b48C85F0a4649E7a9ba\",      \"timestamp\": 1654191900  }"
+				},
+				"getAuditTrail(string,bytes32)": {
+					"notice": "Audit Trail Retrieval: To retrieve the audit trail for a specific trade, the financial institution calls the getAuditTrail function of the CAT contract,  providing the corresponding UTI.  For example:      AuditEntry[] memory tradeAuditTrail = catContract.getAuditTrail(\"PEIKX-A1\", generateUTI(\"TRADE123\"));"
+				}
+			},
+			"version": 1
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/ConsolidatedAuditTrail.sol": "ConsolidatedAuditTrail"
+		},
+		"evmVersion": "paris",
+		"libraries": {},
+		"metadata": {
+			"bytecodeHash": "ipfs"
+		},
+		"optimizer": {
+			"enabled": false,
+			"runs": 200
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/ConsolidatedAuditTrail.sol": {
+			"keccak256": "0xdae826411d03158996164d2532b94d24639e497322fb135154e6db4d2501e766",
+			"license": "CC-BY-4.0",
+			"urls": [
+				"bzz-raw://b41e3ec4ebd50ab348aee86eae3877b5eceb621e843d39be3b59a93ae24d0f8f",
+				"dweb:/ipfs/QmPhhsWGYAymcvrUys2EPBQgUN2CXuLnAAVSNvkdDZWtmm"
+			]
+		},
+		"contracts/IConsolidatedAuditTrail.sol": {
+			"keccak256": "0x6730e364f9d150a2cc02dbd239bf8e83c86b43bd9f17dd472a6a7a53200967c5",
+			"license": "CC-BY-4.0",
+			"urls": [
+				"bzz-raw://53f5f4bd6e00d4c1d8dcb6e76ccd68368f1f995a31903f3ed8ce744fc752ce49",
+				"dweb:/ipfs/QmRQQV4otU5c2Xvzaf9YaJA6bUZLk7SdSce81xqifq4yZx"
+			]
+		}
+	},
+	"version": 1
+}
