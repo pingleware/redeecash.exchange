@@ -28,19 +28,19 @@ const {
 } = require('./schema');
   
 // Create the token model
-let Token; // = mongoose.model('Token', tokenSchema);
+let Token;
 
 // Create the user model
-let User; // = mongoose.model('User', userSchema);
+let User;
 
 // Create the transfer agent model
-let TransferAgent; // = mongoose.model('TransferAgent', transferAgentSchema);
+let TransferAgent;
 
 // Create the support ticket model
-let SupportTicket; // = mongoose.model('SupportTicket', supportTicketSchema);
+let SupportTicket;
 
 // Create the order model
-let Order; // = mongoose.model('Order', orderSchema);
+let Order;
 
 // Create the consoldate audit trail model
 let CAT;
@@ -55,40 +55,41 @@ let BotProvider;
 
 let Bot;
 
+let conn;
+
 async function init() {
   // Connect to MongoDB
-  mongoose.connect('mongodb://localhost:27017/redeecashexchange', {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+  conn = mongoose.createConnection('mongodb://192.168.0.145:27017/redeecashexchange', {
+    useNewUrlParser: true
   });
 
   // Create the token model
-  Token = mongoose.model('Token', tokenSchema);
+  Token = conn.model('Token', tokenSchema);
 
   // Create the user model
-  User = mongoose.model('User', userSchema);
+  User = conn.model('User', userSchema);
 
   // Create the transfer agent model
-  TransferAgent = mongoose.model('TransferAgent', transferAgentSchema);
+  TransferAgent = conn.model('TransferAgent', transferAgentSchema);
 
   // Create the support ticket model
-  SupportTicket = mongoose.model('SupportTicket', supportTicketSchema);
+  SupportTicket = conn.model('SupportTicket', supportTicketSchema);
 
   // Create the order model
-  Order = mongoose.model('Order', orderSchema);
+  Order = conn.model('Order', orderSchema);
 
   // Create the CAT model
-  CAT = mongoose.model('CAT', catSchema);
+  CAT = conn.model('CAT', catSchema);
 
   // Create the Firm model
-  Firm = mongoose.model('Firm', firmSchema);
+  Firm = conn.model('Firm', firmSchema);
 
   // Create the broker-dealer model
-  BrokerDealer = mongoose.model('BrokerDealer', brokerDealerSchema);
+  BrokerDealer = conn.model('BrokerDealer', brokerDealerSchema);
 
-  BotProvider = mongoose.model('BotProvider', botProviderSchema);
+  BotProvider = conn.model('BotProvider', botProviderSchema);
 
-  Bot = mongoose.model('Bot', botSchema);
+  Bot = conn.model('Bot', botSchema);
 }
 
 async function brokerDealerRegistration(brokerDealerDetails) {
@@ -374,13 +375,13 @@ async function performKYCVerification(userId, kycData) {
  */
 async function applyForTokenListing(tokenDetails) {
     try {
-      mongoose.connect('mongodb://localhost:27017/redeecashexchange', {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      });
+      //mongoose.connect('mongodb://localhost:27017/redeecashexchange', {
+      //  useNewUrlParser: true,
+      //  useUnifiedTopology: true,
+      //});
     
       // Create the token model
-      Token = mongoose.model('Token', tokenSchema);
+      Token = conn.model('Token', tokenSchema);
       const token = JSON.parse(tokenDetails);
       const _token = await Token.create(token);
       const status = await  _token.save()  

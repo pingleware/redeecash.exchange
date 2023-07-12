@@ -18,6 +18,10 @@ const tokenSchema = new mongoose.Schema({
       type: String,
       required: true,
     },
+    abi: {
+      type: String,
+      required: true,
+    },
     contractAddress: {
       type: String,
       required: true,
